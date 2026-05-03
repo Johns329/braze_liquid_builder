@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Braze Catalog Liquid Builder</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --adobe-blue: #1473e6;
+      --adobe-blue-hover: #0d66d0;
+      --adobe-red: #fa0f00;
+      --adobe-orange: #ff7a00;
+      --adobe-magenta: #f54c7f;
+      --adobe-purple: #8d6bff;
+      --ink: #2c2c2c;
+      --ink-strong: #1d1d1d;
+      --ink-muted: #6e6e6e;
+      --ink-soft: #909090;
+      --border: #dedede;
+      --border-strong: #cacaca;
+      --surface: #ffffff;
+      --surface-soft: #f8f8f8;
+      --background: #f5f5f5;
+      --nav: #000000;
+      --danger: #d31510;
+      --success: #12805c;
+      --info: var(--adobe-blue);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.12);
+      --shadow-lg: 0 18px 45px rgba(0, 0, 0, 0.18);
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --radius-pill: 999px;
+      --max-w: 1180px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--background);
+      color: var(--ink);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(calc(100% - 48px), var(--max-w));
+      margin: 0 auto;
+    }
+
+    /* Adobe-inspired shell navigation */
+    .shellbar {
+      min-height: 68px;
+      background: var(--nav);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 28px;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 214px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      font-size: 19px;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      background: #fff;
+      color: #000;
+      display: grid;
+      place-items: center;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.16em;
+      padding-right: 3px;
+    }
+
+    .shell-links {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.78);
+      flex: 1;
+      min-width: 0;
+    }
+
+    .shell-links a {
+      white-space: nowrap;
+      transition: color 0.15s ease;
+    }
+
+    .shell-links a:hover,
+    .shell-links a.active { color: #fff; }
+
+    .shell-more {
+      font-size: 24px;
+      line-height: 1;
+      color: rgba(255, 255, 255, 0.72);
+      margin-left: 2px;
+    }
+
+    .shell-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.92);
+      white-space: nowrap;
+    }
+
+    .shell-icon {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 17px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: linear-gradient(135deg, #08c4df 0%, #0b95cf 100%);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .subnav {
+      background: var(--surface);
+      min-height: 62px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 20;
+    }
+
+    .subnav-inner {
+      width: min(calc(100% - 48px), var(--max-w));
+      margin: 0 auto;
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      gap: 34px;
+      color: var(--ink-strong);
+      font-size: 14px;
+    }
+
+    .subnav .mini-mark {
+      width: 28px;
+      height: 28px;
+      color: var(--adobe-red);
+      font-weight: 900;
+      font-size: 26px;
+      line-height: 1;
+      margin-right: 4px;
+    }
+
+    .subnav a {
+      min-height: 62px;
+      display: inline-flex;
+      align-items: center;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+    }
+
+    .subnav a.active {
+      border-bottom-color: var(--ink-strong);
+      font-weight: 700;
+    }
+
+    .subnav .chevron::after {
+      content: '⌄';
+      font-size: 14px;
+      margin-left: 7px;
+      color: var(--ink-muted);
+      transform: translateY(-1px);
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      isolation: isolate;
+      min-height: 250px;
+      overflow: visible;
+      background:
+        radial-gradient(780px 360px at 18% 10%, rgba(156, 137, 255, 0.95), transparent 68%),
+        radial-gradient(760px 360px at 58% 16%, rgba(255, 134, 51, 0.82), transparent 63%),
+        linear-gradient(108deg, #8d78f7 0%, #d361b3 31%, #ff6537 59%, #f30c00 100%);
+    }
+
+    .hero::before,
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: auto;
+      pointer-events: none;
+      z-index: -1;
+      border-radius: 50%;
+      filter: blur(0.5px);
+      opacity: 0.55;
+    }
+
+    .hero::before {
+      width: 640px;
+      height: 360px;
+      left: 18%;
+      top: -126px;
+      background: rgba(255, 255, 255, 0.15);
+      transform: rotate(101deg);
+    }
+
+    .hero::after {
+      width: 460px;
+      height: 300px;
+      right: 20%;
+      bottom: -190px;
+      background: rgba(0, 0, 0, 0.08);
+      transform: rotate(-31deg);
+    }
+
+    .hero-content {
+      min-height: 250px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+      padding: 40px 0 72px;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 13px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.34);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero h1 {
+      font-size: clamp(34px, 5vw, 48px);
+      line-height: 1.08;
+      letter-spacing: -0.045em;
+      font-weight: 800;
+      text-shadow: 0 10px 35px rgba(0, 0, 0, 0.18);
+      margin-bottom: 11px;
+    }
+
+    .hero p {
+      max-width: 760px;
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .hero-actions {
+      position: absolute;
+      left: 50%;
+      bottom: -34px;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      width: min(calc(100% - 48px), 760px);
+      z-index: 5;
+    }
+
+    .hero-pill {
+      min-height: 56px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 28px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--ink-strong);
+      font-weight: 800;
+      font-size: 16px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .hero-pill:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.17);
+      background: #fff;
+    }
+
+    .hero-pill.primary {
+      background: var(--adobe-blue);
+      color: #fff;
+      border-color: transparent;
+      min-width: 222px;
+    }
+
+    .hero-pill.primary:hover { background: var(--adobe-blue-hover); }
+
+    .app-content {
+      padding-top: 74px;
+      padding-bottom: 84px;
+    }
+
+    .welcome-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      min-height: 130px;
+      padding: 24px 28px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 22px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 22px;
+    }
+
+    .welcome-illustration {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 70% 30%, rgba(255, 122, 0, 0.9) 0 16%, transparent 17%),
+        radial-gradient(circle at 40% 36%, rgba(202, 114, 175, 0.9) 0 15%, transparent 16%),
+        radial-gradient(circle at 61% 62%, rgba(20, 115, 230, 0.18) 0 34%, transparent 35%),
+        linear-gradient(135deg, rgba(20, 115, 230, 0.12), rgba(250, 15, 0, 0.11));
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .welcome-illustration::before {
+      content: '⚙';
+      position: absolute;
+      left: 13px;
+      bottom: 11px;
+      color: #6a6ff5;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .header-tag {
+      display: inline-flex;
+      width: fit-content;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--adobe-blue);
+      background: #eef5ff;
+      border: 1px solid #d7e8ff;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      margin-bottom: 8px;
+    }
+
+    .welcome-card h2 {
+      font-size: 22px;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--ink-strong);
+      margin-bottom: 4px;
+    }
+
+    .welcome-card p {
+      color: var(--ink-muted);
+      max-width: 790px;
+      font-size: 14px;
+    }
+
+    .welcome-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 20px;
+      border-radius: var(--radius-pill);
+      border: 2px solid var(--ink-strong);
+      color: var(--ink-strong);
+      font-weight: 800;
+      white-space: nowrap;
+      background: #fff;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .welcome-link:hover {
+      background: var(--surface-soft);
+      transform: translateY(-1px);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 26px;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-title {
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.025em;
+      margin-bottom: 5px;
+      color: var(--ink-strong);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-title .step {
+      width: 30px;
+      height: 30px;
+      background: var(--adobe-blue);
+      color: white;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: 0 4px 10px rgba(20, 115, 230, 0.28);
+      flex: 0 0 auto;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--ink-muted);
+      margin-bottom: 20px;
+    }
+
+    /* Config grid */
+    .config-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .source-mode-toggle {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .source-mode-option {
+      flex: 1 1 300px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: var(--surface);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.15s;
+    }
+
+    .source-mode-option:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
+    }
+
+    .source-mode-option input {
+      margin-top: 3px;
+      accent-color: var(--adobe-blue);
+    }
+
+    .source-mode-title {
+      display: block;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--ink-strong);
+    }
+
+    .source-mode-description {
+      display: block;
+      font-size: 12px;
+      color: var(--ink-muted);
+      margin-top: 4px;
+    }
+
+    .source-mode-description code,
+    .field-hint code,
+    .advanced-logic-section code {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+      font-size: 0.92em;
+      background: #f3f3f3;
+      padding: 1px 5px;
+      border-radius: 4px;
+      border: 1px solid #e5e5e5;
+    }
+
+    .source-mode-option.active {
+      border-color: rgba(20, 115, 230, 0.62);
+      background: #f4f9ff;
+      box-shadow: 0 0 0 3px rgba(20, 115, 230, 0.12);
+    }
+
+    .config-field-hidden { display: none !important; }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .field-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: 0.01em;
+    }
+
+    .field-hint {
+      font-size: 11px;
+      color: var(--ink-soft);
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    }
+
+    .form-input,
+    .form-select {
+      width: 100%;
+      min-height: 42px;
+      padding: 10px 12px;
+      font-size: 14px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      background: #fff;
+      color: var(--ink-strong);
+      font-family: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+
+    .form-input:hover,
+    .form-select:hover { border-color: #b8b8b8; }
+
+    .form-input:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: var(--adobe-blue);
+      box-shadow: 0 0 0 3px rgba(20, 115, 230, 0.16);
+    }
+
+    .form-input.mono {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+      font-size: 13px;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 38px;
+      padding: 0 18px;
+      font-size: 14px;
+      font-weight: 800;
+      border: 1px solid transparent;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s, border-color 0.15s, transform 0.05s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:active { transform: translateY(1px); }
+
+    .btn-primary {
+      background: var(--adobe-blue);
+      color: white;
+      box-shadow: 0 4px 12px rgba(20, 115, 230, 0.22);
+    }
+
+    .btn-primary:hover { background: var(--adobe-blue-hover); }
+
+    .btn-secondary {
+      background: white;
+      color: var(--ink-strong);
+      border-color: var(--border-strong);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-soft);
+      border-color: #b8b8b8;
+    }
+
+    .btn-danger-ghost {
+      background: transparent;
+      color: var(--ink-muted);
+      padding: 0 10px;
+      min-width: 38px;
+      font-size: 22px;
+      line-height: 1;
+      border-radius: 50%;
+    }
+
+    .btn-danger-ghost:hover {
+      color: var(--danger);
+      background: rgba(211, 21, 16, 0.08);
+    }
+
+    .btn-mini {
+      min-height: 32px;
+      padding: 0 14px;
+      font-size: 12px;
+    }
+
+    /* Conditions */
+    .condition-row {
+      display: grid;
+      grid-template-columns: auto minmax(190px, 1.4fr) minmax(116px, 0.9fr) minmax(160px, 1.2fr) minmax(210px, 1.6fr) auto;
+      gap: 12px;
+      align-items: end;
+      padding: 16px;
+      background: var(--surface-soft);
+      border: 1px solid #e6e6e6;
+      border-radius: 13px;
+      margin-bottom: 12px;
+    }
+
+    .condition-number {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--ink-strong);
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      align-self: center;
+      margin-bottom: 1px;
+    }
+
+    .value-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .value-row .form-input { flex: 1; min-width: 0; }
+
+    .value-suffix {
+      font-size: 12px;
+      color: var(--ink-muted);
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .no-value-pill {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--ink-muted);
+      background: #fff;
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-md);
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* Output */
+    .code-window {
+      background: #151515;
+      border-radius: 13px;
+      overflow: hidden;
+      border: 1px solid #2a2a2a;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .code-header {
+      background: #050505;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .code-header-label {
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    }
+
+    .code-pre {
+      padding: 20px;
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+      font-size: 12.5px;
+      line-height: 1.58;
+      color: #eeeeee;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-x: auto;
+      max-height: 540px;
+      overflow-y: auto;
+      background:
+        linear-gradient(90deg, rgba(20, 115, 230, 0.08), transparent 18%),
+        #151515;
+    }
+
+    .preview-box {
+      padding: 16px 18px;
+      background: #f4f9ff;
+      border: 1px solid #d9eaff;
+      border-left: 4px solid var(--adobe-blue);
+      border-radius: 12px;
+      font-size: 14px;
+      color: var(--ink);
+      margin-bottom: 18px;
+    }
+
+    .preview-box-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--adobe-blue);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--success);
+      color: white;
+      padding: 13px 18px;
+      border-radius: var(--radius-pill);
+      font-size: 14px;
+      font-weight: 800;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+      transform: translateY(150%);
+      transition: transform 0.3s ease;
+      z-index: 100;
+    }
+
+    .toast.show { transform: translateY(0); }
+
+    .empty-state {
+      padding: 34px;
+      text-align: center;
+      color: var(--ink-soft);
+      font-size: 14px;
+      border: 1px dashed var(--border-strong);
+      border-radius: 13px;
+      background: var(--surface-soft);
+    }
+
+    .advanced-logic-section {
+      margin-top: 18px;
+      padding: 16px 18px;
+      background: var(--surface-soft);
+      border: 1px solid #e6e6e6;
+      border-radius: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .advanced-logic-section .field-label { margin-bottom: 0; }
+
+    .advanced-logic-error {
+      font-size: 12px;
+      color: var(--danger);
+      padding: 8px 10px;
+      background: rgba(211, 21, 16, 0.08);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(211, 21, 16, 0.25);
+    }
+
+    #advancedLogicInput.input-invalid {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px rgba(211, 21, 16, 0.13);
+    }
+
+    @media (max-width: 1080px) {
+      .shell-links a:nth-of-type(n+5) { display: none; }
+      .welcome-card { grid-template-columns: auto 1fr; }
+      .welcome-link { grid-column: 2; justify-self: start; }
+      .condition-row {
+        grid-template-columns: auto 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .container,
+      .subnav-inner { width: min(calc(100% - 32px), var(--max-w)); }
+      .shellbar { padding: 0 16px; gap: 16px; }
+      .brand { min-width: 0; font-size: 16px; }
+      .brand-mark { width: 38px; height: 38px; font-size: 23px; }
+      .shell-links { display: none; }
+      .shell-actions .user-name { display: none; }
+      .subnav-inner { overflow-x: auto; gap: 24px; }
+      .hero { min-height: 285px; }
+      .hero-content { min-height: 285px; padding-bottom: 106px; }
+      .hero-actions { bottom: -58px; gap: 12px; }
+      .hero-pill { min-height: 50px; width: min(100%, 320px); }
+      .app-content { padding-top: 92px; }
+      .config-grid { grid-template-columns: 1fr; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .toolbar .btn { align-self: flex-start; }
+      .condition-row { grid-template-columns: auto 1fr; }
+    }
+
+    @media (max-width: 620px) {
+      .shellbar { min-height: 60px; }
+      .brand span:last-child { display: none; }
+      .shell-actions { gap: 8px; }
+      .subnav .mini-mark { display: none; }
+      .subnav-inner { gap: 22px; }
+      .hero h1 { font-size: 32px; }
+      .hero p { font-size: 14px; }
+      .welcome-card,
+      .card { padding: 20px; }
+      .welcome-card { grid-template-columns: 1fr; }
+      .welcome-link { grid-column: 1; }
+      .welcome-illustration { display: none; }
+      .card-title { font-size: 20px; align-items: flex-start; }
+      .condition-row { grid-template-columns: 1fr; }
+      .condition-number { margin-bottom: 0; }
+      .code-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="shellbar" aria-label="Admin Console navigation">
+    <a class="brand" href="#sourceConfig" aria-label="Braze Catalog Liquid Builder home">
+      <span>Braze Liquid Suite</span>
+    </a>
+    <div class="shell-links" aria-label="Primary navigation">
+      <a href="#sourceConfig" class="active">Catalog Builder</a>
+
+      <span class="shell-more" aria-hidden="true">•••</span>
+    </div>
+
+  </nav>
+
+
+
+  <section class="hero" aria-labelledby="pageTitle">
+    <div class="container hero-content">
+      <h1 id="pageTitle">Braze Catalog Liquid Builder</h1>
+      <p>Generate Braze Liquid that matches nested or non-nested user attributes against a catalog, then filters by your conditions.</p>
+    </div>
+
+  </section>
+
+  <main class="container app-content">
+    <section class="welcome-card" aria-label="Builder overview">
+      <div class="welcome-illustration" aria-hidden="true"></div>
+      <div>
+        <h2>Build catalog-powered targeting rules</h2>
+        <p>Configure the user attribute source, layer catalog field conditions, and copy production-ready Liquid from a cleaner.</p>
+      </div>
+
+    </section>
+
+    <!-- Step 1: Source configuration -->
+    <section class="card" id="sourceConfig">
+      <h2 class="card-title"><span class="step">1</span> Source Configuration</h2>
+      <p class="card-subtitle">Choose whether the catalog ID comes from each object in a nested array or from one string custom attribute.</p>
+
+      <div class="source-mode-toggle" role="radiogroup" aria-label="Catalog matching source">
+        <label class="source-mode-option active" id="nestedModeOption" for="modeNested">
+          <input type="radio" name="sourceMode" id="modeNested" value="nested" checked />
+          <span>
+            <span class="source-mode-title">Nested attribute array</span>
+            <span class="source-mode-description">Loop over an <a href="https://www.braze.com/docs/user_guide/data/activation/attributes/array_of_objects/#supported-data-types">array of objects</a> and use each item’s unique indentifier to match with the <a href=”https://www.braze.com/docs/user_guide/data/activation/catalogs/use/#using-catalogs-in-a-message”>catalog ID</a>.</span>
+          </span>
+        </label>
+        <label class="source-mode-option" id="singleModeOption" for="modeSingle">
+          <input type="radio" name="sourceMode" id="modeSingle" value="single" />
+          <span>
+            <span class="source-mode-title">Non-nested string attribute</span>
+            <span class="source-mode-description">Use a string custom attribute to against the Braze catalog ID.</span>
+          </span>
+        </label>
+      </div>
+
+      <div class="config-grid">
+        <div class="field-group source-nested-only" id="nestedAttrGroup">
+          <label class="field-label" for="nestedAttr">Nested Attribute Name</label>
+          <input type="text" class="form-input mono" id="nestedAttr" value="attribute_name " spellcheck="false" />
+          <span class="field-hint">User custom attribute (array)</span>
+        </div>
+        <div class="field-group source-nested-only" id="matchKeyGroup">
+          <label class="field-label" for="matchKey">Nested Match Key</label>
+          <input type="text" class="form-input mono" id="matchKey" value="unique_indentifier " spellcheck="false" />
+          <span class="field-hint">Key inside each array item to join on catalog ID</span>
+        </div>
+        <div class="field-group source-single-only config-field-hidden" id="singleAttrGroup">
+          <label class="field-label" for="singleAttr">Non-Nested Attribute Name</label>
+          <input type="text" class="form-input mono" id="singleAttr" value="state" spellcheck="false" />
+          <span class="field-hint">String custom attribute whose value is the catalog ID</span>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="catalogName">Catalog Name</label>
+          <input type="text" class="form-input mono" id="catalogName" value="Enter your Braze catalog name" spellcheck="false" />
+          <span class="field-hint">Braze catalog to look up</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 2: Query conditions -->
+    <section class="card" id="queryConditions">
+      <div class="toolbar">
+        <div>
+          <h2 class="card-title"><span class="step">2</span> Query Conditions</h2>
+          <p class="card-subtitle">By default multiple filters evaluate as <strong>AND</strong>. Once you have 2+ filters, use Advanced Filter Logic for <strong>AND</strong>, <strong>OR</strong>, and parentheses.</p>
+        </div>
+        <button class="btn btn-primary" id="addConditionBtn">+ Add Condition</button>
+      </div>
+
+      <div id="conditionsContainer"></div>
+
+      <div id="advancedLogicSection" class="advanced-logic-section" style="display:none;">
+        <label class="field-label" for="advancedLogicInput">Advanced Filter Logic</label>
+        <input type="text" class="form-input mono" id="advancedLogicInput" placeholder="1 or 2" spellcheck="false" />
+        <span class="field-hint">Use filter numbers, <code>and</code>, <code>or</code>, and parentheses. Example with two filters: <code>1 or 2</code>.</span>
+        <div id="advancedLogicError" class="advanced-logic-error" style="display:none;"></div>
+      </div>
+    </section>
+
+    <!-- Step 3: Output -->
+    <section class="card" id="generatedOutput">
+      <h2 class="card-title"><span class="step">3</span> Generated Liquid</h2>
+      <p class="card-subtitle">Paste this into a Braze Webhook campaign request body.</p>
+
+      <div class="preview-box">
+        <div class="preview-box-label">Plain English</div>
+        <div id="queryPreview">Find users with at least one matching catalog entry.</div>
+      </div>
+
+      <div class="code-window">
+        <div class="code-header">
+          <span class="code-header-label">Audience Logic — Liquid</span>
+          <button class="btn btn-secondary btn-mini" id="copyBtn">Copy Liquid</button>
+        </div>
+        <pre class="code-pre" id="generatedCode">Generating…</pre>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">✓ Copied to clipboard</div>
+
+  <script>
+    // ============================================================
+    // Operator catalog (mirrors builder-config.js operatorsByType)
+    // ============================================================
+    const OPERATORS = {
+      string: {
+        equals:                  { liquid: '==', label: 'Equals' },
+        does_not_equal:          { liquid: '!=', label: 'Does Not Equal' },
+        is_any_of:               { liquid: 'is_any_of', label: 'Is Any Of', multiValue: true },
+        is_none_of:              { liquid: 'is_none_of', label: 'Is None Of', multiValue: true },
+        contains_any_of:         { liquid: 'contains_any_of', label: 'Contains Any Of', multiValue: true },
+        doesnt_contain_any_of:   { liquid: 'doesnt_contain_any_of', label: "Doesn't Contain Any Of", multiValue: true },
+        is_not_blank:            { liquid: 'is_not_blank', label: 'Is Not Blank', noValue: true },
+        is_blank:                { liquid: 'is_blank', label: 'Is Blank', noValue: true },
+      },
+      number: {
+        exactly:                 { liquid: '==', label: 'Exactly' },
+        does_not_equal:          { liquid: '!=', label: 'Does Not Equal' },
+        more_than:               { liquid: '>',  label: 'More Than' },
+        less_than:               { liquid: '<',  label: 'Less Than' },
+        more_than_or_equal:      { liquid: '>=', label: 'More Than or Equal' },
+        less_than_or_equal:      { liquid: '<=', label: 'Less Than or Equal' },
+        between:                 { liquid: 'between', label: 'Between', rangeValue: true },
+        is_not_blank:            { liquid: 'is_not_blank', label: 'Is Not Blank', noValue: true },
+        is_blank:                { liquid: 'is_blank', label: 'Is Blank', noValue: true },
+      },
+      boolean: {
+        is_true:                 { liquid: '== true',  label: 'Is True',  noValue: true },
+        is_false:                { liquid: '== false', label: 'Is False', noValue: true },
+        is_true_or_not_set:      { liquid: 'is_true_or_not_set',  label: 'Is True or Not Set',  noValue: true },
+        is_false_or_not_set:     { liquid: 'is_false_or_not_set', label: 'Is False or Not Set', noValue: true },
+        is_not_blank:            { liquid: 'is_not_blank', label: 'Is Not Blank', noValue: true },
+        is_blank:                { liquid: 'is_blank', label: 'Is Blank', noValue: true },
+      },
+      datetime: {
+        before:                  { liquid: '<',  label: 'Before' },
+        after:                   { liquid: '>',  label: 'After' },
+        on:                      { liquid: '==', label: 'On' },
+        before_or_on:            { liquid: '<=', label: 'Before or On' },
+        after_or_on:             { liquid: '>=', label: 'After or On' },
+        between_dates:           { liquid: 'between', label: 'Between Dates', rangeValue: true },
+        more_than_days_ago:      { liquid: 'more_than_days_ago',     label: 'More Than X Days Ago',     preset: true },
+        less_than_days_ago:      { liquid: 'less_than_days_ago',     label: 'Less Than X Days Ago',     preset: true },
+        more_than_days_in_future:{ liquid: 'more_than_days_in_future', label: 'More Than X Days in Future', preset: true },
+        less_than_days_in_future:{ liquid: 'less_than_days_in_future', label: 'Less Than X Days in Future', preset: true },
+        is_not_blank:            { liquid: 'is_not_blank', label: 'Is Not Blank', noValue: true },
+        is_blank:                { liquid: 'is_blank', label: 'Is Blank', noValue: true },
+      },
+    };
+
+    // ============================================================
+    // State
+    // ============================================================
+    const state = {
+      sourceMode:  'nested', // 'nested' loops an array; 'single' uses one string custom attribute as the catalog ID
+      nestedAttr:  'attribute_name ',
+      matchKey:    'unique_indentifier ',
+      singleAttr:  'state',
+      catalogName: 'Enter your Braze catalog name',
+      conditions: [
+        { id: 1, field: 'account_segment', type: 'string', operator: 'equals', value: 'SMB' },
+      ],
+      advancedLogic: '',       // user-typed expression, e.g. "1 and (2 or 3)"
+      userTouchedLogic: false, // becomes true once user edits the field
+    };
+    let nextId = 2;
+
+    // ============================================================
+    // Helpers
+    // ============================================================
+    const $ = (sel) => document.querySelector(sel);
+    const escAttr = (v) => String(v).replace(/"/g, '&quot;');
+    const quoteLiquid = (v) => `"${String(v ?? '').replace(/"/g, '\\"')}"`;
+    const firstOpKey = (type) => Object.keys(OPERATORS[type])[0];
+
+    // ============================================================
+    // Rendering
+    // ============================================================
+    function render() {
+      renderSourceConfiguration();
+      renderConditions();
+      renderAdvancedLogic();
+      updatePreview();
+      updateGeneratedCode();
+    }
+
+    function renderSourceConfiguration() {
+      const isNested = state.sourceMode === 'nested';
+      const nestedOption = document.getElementById('nestedModeOption');
+      const singleOption = document.getElementById('singleModeOption');
+      const nestedRadio = document.getElementById('modeNested');
+      const singleRadio = document.getElementById('modeSingle');
+
+      nestedOption?.classList.toggle('active', isNested);
+      singleOption?.classList.toggle('active', !isNested);
+      if (nestedRadio) nestedRadio.checked = isNested;
+      if (singleRadio) singleRadio.checked = !isNested;
+
+      document.querySelectorAll('.source-nested-only').forEach(el => {
+        el.classList.toggle('config-field-hidden', !isNested);
+      });
+      document.querySelectorAll('.source-single-only').forEach(el => {
+        el.classList.toggle('config-field-hidden', isNested);
+      });
+    }
+
+    function renderAdvancedLogic() {
+      const section = document.getElementById('advancedLogicSection');
+      const input   = document.getElementById('advancedLogicInput');
+      const errorEl = document.getElementById('advancedLogicError');
+      if (!section || !input) return;
+
+      const filterCount = state.conditions.length;
+      const validConds = state.conditions.filter(c => c.field);
+      const validCount = validConds.length;
+      const logicCount = validCount >= 2 ? validCount : filterCount;
+
+      // Show once the user has added at least 2 filter rows.
+      if (filterCount < 2) {
+        section.style.display = 'none';
+        return;
+      }
+      section.style.display = '';
+
+      // Default expression if user hasn't touched it. Blank filter rows are
+      // ignored by generated Liquid until a catalog field is entered, but the
+      // input still appears immediately when the second filter row is added.
+      const defaultExpr = Array.from({ length: logicCount }, (_, i) => i + 1).join(' and ');
+      if (!state.userTouchedLogic) {
+        state.advancedLogic = defaultExpr;
+      }
+
+      // Sync input value (only if different, to preserve cursor position when possible)
+      if (input.value !== state.advancedLogic) {
+        input.value = state.advancedLogic;
+      }
+
+      // Validate against the visible filter count used in the default expression.
+      const expr = (state.advancedLogic || '').trim();
+      if (expr) {
+        const ast = parseLogicAst(expr, logicCount);
+        if (!ast) {
+          input.classList.add('input-invalid');
+          errorEl.style.display = '';
+          errorEl.textContent = `Invalid expression. Falling back to "${defaultExpr}". Check parentheses and use only filter numbers 1–${logicCount} with "and" / "or".`;
+        } else {
+          input.classList.remove('input-invalid');
+          errorEl.style.display = 'none';
+        }
+      } else {
+        input.classList.remove('input-invalid');
+        errorEl.style.display = 'none';
+      }
+    }
+
+    function renderConditions() {
+      const container = $('#conditionsContainer');
+      if (state.conditions.length === 0) {
+        container.innerHTML = `<div class="empty-state">No conditions yet. Click "+ Add Condition" to start.</div>`;
+        return;
+      }
+
+      const rows = [];
+      state.conditions.forEach((c, idx) => {
+        rows.push(buildConditionRow(c, idx));
+      });
+      container.innerHTML = rows.join('');
+
+      // Wire up listeners
+      state.conditions.forEach((c) => {
+        const fieldInput  = document.getElementById(`field-${c.id}`);
+        const typeSelect  = document.getElementById(`type-${c.id}`);
+        const opSelect    = document.getElementById(`op-${c.id}`);
+        const removeBtn   = document.getElementById(`remove-${c.id}`);
+
+        fieldInput?.addEventListener('input',  (e) => updateCondition(c.id, 'field', e.target.value));
+        typeSelect?.addEventListener('change', (e) => updateConditionType(c.id, e.target.value));
+        opSelect?.addEventListener('change',   (e) => updateConditionOperator(c.id, e.target.value));
+        removeBtn?.addEventListener('click',   () => removeCondition(c.id));
+
+        // Value handling depends on operator shape
+        const op = OPERATORS[c.type][c.operator] || {};
+        if (op.rangeValue) {
+          const minEl = document.getElementById(`min-${c.id}`);
+          const maxEl = document.getElementById(`max-${c.id}`);
+          minEl?.addEventListener('input', (e) => updateRangeValue(c.id, 'min', e.target.value));
+          maxEl?.addEventListener('input', (e) => updateRangeValue(c.id, 'max', e.target.value));
+        } else if (!op.noValue) {
+          const valEl = document.getElementById(`val-${c.id}`);
+          valEl?.addEventListener('input', (e) => updateCondition(c.id, 'value', e.target.value));
+        }
+      });
+    }
+
+    function buildConditionRow(c, idx = 0) {
+      const opMap = OPERATORS[c.type] || OPERATORS.string;
+      const op = opMap[c.operator] || {};
+
+      const typeOptions = ['string', 'number', 'boolean', 'datetime']
+        .map(t => `<option value="${t}" ${t === c.type ? 'selected' : ''}>${t.charAt(0).toUpperCase() + t.slice(1)}</option>`)
+        .join('');
+
+      const opOptions = Object.entries(opMap)
+        .map(([key, def]) => `<option value="${key}" ${key === c.operator ? 'selected' : ''}>${def.label}</option>`)
+        .join('');
+
+      return `
+        <div class="condition-row">
+          <div class="condition-number" title="Filter ${idx + 1}">${idx + 1}</div>
+          <div class="field-group">
+            <label class="field-label">Catalog Field</label>
+            <input type="text" class="form-input mono" id="field-${c.id}" value="${escAttr(c.field)}" placeholder="e.g. account_segment" spellcheck="false" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Type</label>
+            <select class="form-select" id="type-${c.id}">${typeOptions}</select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Operator</label>
+            <select class="form-select" id="op-${c.id}">${opOptions}</select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Value</label>
+            ${buildValueInput(c, op)}
+          </div>
+          <div class="field-group">
+            <label class="field-label">&nbsp;</label>
+            <button class="btn btn-danger-ghost" id="remove-${c.id}" title="Remove condition" aria-label="Remove condition">×</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildValueInput(c, op) {
+      if (op.noValue) {
+        return `<div class="no-value-pill">No value needed</div>`;
+      }
+      if (op.rangeValue) {
+        const [min = '', max = ''] = (c.value || '').split(',').map(v => v.trim());
+        const inputType = c.type === 'datetime' ? 'date' : (c.type === 'number' ? 'number' : 'text');
+        return `
+          <div class="value-row">
+            <input type="${inputType}" class="form-input" id="min-${c.id}" value="${escAttr(min)}" placeholder="Min" />
+            <span class="value-suffix">to</span>
+            <input type="${inputType}" class="form-input" id="max-${c.id}" value="${escAttr(max)}" placeholder="Max" />
+          </div>
+        `;
+      }
+      if (op.preset) {
+        return `
+          <div class="value-row">
+            <input type="number" class="form-input" id="val-${c.id}" value="${escAttr(c.value)}" placeholder="7" min="0" />
+            <span class="value-suffix">days</span>
+          </div>
+        `;
+      }
+      if (op.multiValue) {
+        return `<input type="text" class="form-input" id="val-${c.id}" value="${escAttr(c.value)}" placeholder="value1, value2, value3" />`;
+      }
+      // single value, type-aware
+      const inputType = c.type === 'datetime' ? 'date' : (c.type === 'number' ? 'number' : 'text');
+      return `<input type="${inputType}" class="form-input" id="val-${c.id}" value="${escAttr(c.value)}" placeholder="Enter value" />`;
+    }
+
+    // ============================================================
+    // State mutators
+    // ============================================================
+    function addCondition() {
+      state.conditions.push({
+        id: nextId++,
+        field: '',
+        type: 'string',
+        operator: firstOpKey('string'),
+        value: '',
+      });
+      render();
+    }
+    function removeCondition(id) {
+      state.conditions = state.conditions.filter(c => c.id !== id);
+      render();
+    }
+    function updateCondition(id, key, value) {
+      const c = state.conditions.find(x => x.id === id);
+      if (!c) return;
+      c[key] = value;
+      // Avoid full re-render on text typing for value/field — just refresh output.
+      // Field edits can change whether Advanced Filter Logic should appear, so
+      // refresh that section without rebuilding the condition inputs.
+      if (key === 'value' || key === 'field') {
+        if (key === 'field') renderAdvancedLogic();
+        updatePreview();
+        updateGeneratedCode();
+      } else {
+        render();
+      }
+    }
+    function updateConditionType(id, newType) {
+      const c = state.conditions.find(x => x.id === id);
+      if (!c) return;
+      c.type = newType;
+      c.operator = firstOpKey(newType);
+      c.value = '';
+      render();
+    }
+    function updateConditionOperator(id, newOp) {
+      const c = state.conditions.find(x => x.id === id);
+      if (!c) return;
+      c.operator = newOp;
+      c.value = '';
+      render();
+    }
+    function updateRangeValue(id, side, value) {
+      const c = state.conditions.find(x => x.id === id);
+      if (!c) return;
+      const parts = (c.value || '').split(',').map(v => v.trim());
+      if (side === 'min') parts[0] = value; else parts[1] = value;
+      c.value = parts.join(',');
+      updatePreview();
+      updateGeneratedCode();
+    }
+
+    // ============================================================
+    // Liquid generation — mirrors liquid-engine.js (catalog-only, AND-only)
+    // ============================================================
+    function buildConditionExpression(c) {
+      const op = (OPERATORS[c.type] || {})[c.operator];
+      const field = `catalog_item.${c.field}`;
+      const value = String(c.value || '').trim();
+      if (!c.field) return `${field} != blank`;
+      if (!op) return `${field} == ${quoteLiquid(value)}`;
+
+      // No-value operators
+      if (op.noValue) {
+        if (c.type === 'boolean') {
+          const boolField = `${c.field}_bool`;
+          switch (c.operator) {
+            case 'is_true':              return `${boolField} == true`;
+            case 'is_false':             return `${boolField} == false`;
+            case 'is_true_or_not_set':   return `${field} == blank or ${boolField} == true`;
+            case 'is_false_or_not_set':  return `${field} == blank or ${boolField} == false`;
+            case 'is_not_blank':         return `${field} != blank`;
+            case 'is_blank':             return `${field} == blank`;
+          }
+        }
+        if (c.operator === 'is_blank')     return `${field} == blank`;
+        if (c.operator === 'is_not_blank') return `${field} != blank`;
+        return `${field} != blank`;
+      }
+
+      // Range
+      if (op.rangeValue) {
+        const [minVal = '', maxVal = ''] = value.split(',').map(v => v.trim());
+        if (c.type === 'datetime') {
+          const fieldShort = `${c.field}_short`;
+          if (minVal && maxVal) return `${field} != blank and ${fieldShort} >= ${quoteLiquid(minVal)} and ${fieldShort} <= ${quoteLiquid(maxVal)}`;
+          if (minVal)            return `${field} != blank and ${fieldShort} >= ${quoteLiquid(minVal)}`;
+          if (maxVal)            return `${field} != blank and ${fieldShort} <= ${quoteLiquid(maxVal)}`;
+        } else if (c.type === 'number') {
+          const numField = `${c.field}_num`;
+          if (minVal && maxVal) return `${numField} >= ${minVal} and ${numField} <= ${maxVal}`;
+          if (minVal)            return `${numField} >= ${minVal}`;
+          if (maxVal)            return `${numField} <= ${maxVal}`;
+        }
+        return `${field} != blank`;
+      }
+
+      // Datetime presets (days ago / in future)
+      if (op.preset && c.type === 'datetime') {
+        const days = parseInt(value, 10) || 0;
+        if (days <= 0) return `${field} != blank`;
+        const fieldTs  = `${c.field}_ts`;
+        const cutoffVar = `cutoff_${c.operator}_${days}`;
+        switch (c.operator) {
+          case 'more_than_days_ago':       return `${field} != blank and ${fieldTs} < ${cutoffVar}`;
+          case 'less_than_days_ago':       return `${field} != blank and ${fieldTs} >= ${cutoffVar} and ${fieldTs} <= now_ts`;
+          case 'more_than_days_in_future': return `${field} != blank and ${fieldTs} > ${cutoffVar}`;
+          case 'less_than_days_in_future': return `${field} != blank and ${fieldTs} >= now_ts and ${fieldTs} <= ${cutoffVar}`;
+        }
+        return `${field} != blank`;
+      }
+
+      // Multi-value
+      if (op.multiValue) {
+        const values = value.split(',').map(v => v.trim()).filter(Boolean);
+        if (values.length === 0) return `${field} != blank`;
+        switch (c.operator) {
+          case 'is_any_of':
+            return values.length > 1
+              ? values.map(v => `${field} == ${quoteLiquid(v)}`).join(' or ')
+              : `${field} == ${quoteLiquid(values[0])}`;
+          case 'is_none_of':
+            return values.length > 1
+              ? values.map(v => `${field} != ${quoteLiquid(v)}`).join(' and ')
+              : `${field} != ${quoteLiquid(values[0])}`;
+          case 'contains_any_of':
+            return values.length > 1
+              ? values.map(v => `${field} contains ${quoteLiquid(v)}`).join(' or ')
+              : `${field} contains ${quoteLiquid(values[0])}`;
+          case 'doesnt_contain_any_of':
+            // For "doesnt contain any of": we'll flip the rule_N assignment in evaluation.
+            // Here we emit the OR-of-contains — the rule builder negates it.
+            return values.map(v => `${field} contains ${quoteLiquid(v)}`).join(' or ');
+        }
+      }
+
+      // Datetime direct comparison (uses _short slice)
+      if (c.type === 'datetime' && value) {
+        const fieldShort = `${c.field}_short`;
+        return `${field} != blank and ${fieldShort} ${op.liquid} ${quoteLiquid(value)}`;
+      }
+
+      // Number direct comparison (uses _num)
+      if (c.type === 'number') {
+        const numField = `${c.field}_num`;
+        return `${numField} ${op.liquid} ${value || 0}`;
+      }
+
+      // String direct comparison
+      return `${field} ${op.liquid} ${quoteLiquid(value)}`;
+    }
+
+    function getPresetConditions() {
+      return state.conditions
+        .filter(c => {
+          const op = (OPERATORS[c.type] || {})[c.operator];
+          return c.type === 'datetime' && op?.preset && parseInt(c.value, 10) > 0 && c.field;
+        })
+        .map(c => ({ operator: c.operator, days: parseInt(c.value, 10), field: c.field }));
+    }
+
+    function buildDateCutoffSetup(presets) {
+      if (presets.length === 0) return '';
+      let out = '';
+      out += `{% comment %} Calculate date cutoffs {% endcomment %}\n`;
+      out += `{% assign seconds_per_day = 86400 %}\n`;
+      out += `{% assign now_ts = "now" | date: "%s" | plus: 0 %}\n`;
+      const seen = new Set();
+      presets.forEach(({ operator, days }) => {
+        const key = `${operator}_${days}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        const seconds = days * 86400;
+        const op = operator.includes('ago') ? 'minus' : 'plus';
+        out += `{% assign cutoff_${operator}_${days} = now_ts | ${op}: ${seconds} | plus: 0 %}\n`;
+      });
+      return out;
+    }
+
+    function buildCoercions(indent = '    ') {
+      const usedFields = new Set(state.conditions.map(c => c.field).filter(Boolean));
+      const numberFields = new Set();
+      const boolFields   = new Set();
+      const dateShortFields = new Set();
+      const dateTsFields    = new Set();
+
+      // Always coerce based on the declared type — Braze catalogs store every
+      // value as a string, so the coerced var is what every operator should
+      // compare against (except is_blank/is_not_blank which use the raw field).
+      state.conditions.forEach(c => {
+        if (!c.field || !usedFields.has(c.field)) return;
+        if (c.type === 'number')   numberFields.add(c.field);
+        if (c.type === 'boolean')  boolFields.add(c.field);
+        if (c.type === 'datetime') {
+          dateShortFields.add(c.field);
+          dateTsFields.add(c.field);
+        }
+      });
+
+      let out = '';
+
+      if (dateShortFields.size > 0) {
+        out += `${indent}{% comment %} Slice date fields to YYYY-MM-DD format {% endcomment %}\n`;
+        dateShortFields.forEach(f => {
+          out += `${indent}{% if catalog_item.${f} != blank %}\n`;
+          out += `${indent}    {% assign ${f}_short = catalog_item.${f} | slice: 0, 10 %}\n`;
+          out += `${indent}{% endif %}\n`;
+        });
+      }
+      if (dateTsFields.size > 0) {
+        out += `${indent}{% comment %} Convert date fields to timestamps {% endcomment %}\n`;
+        dateTsFields.forEach(f => {
+          out += `${indent}{% assign ${f}_ts = 0 %}\n`;
+          out += `${indent}{% if catalog_item.${f} != blank %}\n`;
+          out += `${indent}    {% assign ${f}_ts = catalog_item.${f} | date: "%s" | plus: 0 %}\n`;
+          out += `${indent}{% endif %}\n`;
+        });
+      }
+      if (numberFields.size > 0) {
+        out += `${indent}{% comment %} Coerce number fields to numeric type {% endcomment %}\n`;
+        numberFields.forEach(f => {
+          out += `${indent}{% assign ${f}_num = catalog_item.${f} | plus: 0 %}\n`;
+        });
+      }
+      if (boolFields.size > 0) {
+        out += `${indent}{% comment %} Coerce catalog boolean fields into real booleans {% endcomment %}\n`;
+        boolFields.forEach(f => {
+          out += `${indent}{% assign ${f}_bool = false %}\n`;
+          out += `${indent}{% if catalog_item.${f} == "true" or catalog_item.${f} == true %}\n`;
+          out += `${indent}    {% assign ${f}_bool = true %}\n`;
+          out += `${indent}{% endif %}\n`;
+        });
+      }
+      return out;
+    }
+
+    function buildRuleEvaluation(c, ruleVar, indent = '    ') {
+      // Special case: doesnt_contain_any_of — invert the assignment
+      if (c.operator === 'doesnt_contain_any_of') {
+        const value = String(c.value || '').trim();
+        const values = value.split(',').map(v => v.trim()).filter(Boolean);
+        if (values.length === 0) {
+          let out = '';
+          out += `${indent}{% assign ${ruleVar} = false %}\n`;
+          out += `${indent}{% if catalog_item.${c.field} != blank %}\n`;
+          out += `${indent}    {% assign ${ruleVar} = true %}\n`;
+          out += `${indent}{% endif %}\n`;
+          return out;
+        }
+        const containsExpr = values.map(v => `catalog_item.${c.field} contains ${quoteLiquid(v)}`).join(' or ');
+        let out = '';
+        out += `${indent}{% assign ${ruleVar} = true %}\n`;
+        out += `${indent}{% if ${containsExpr} %}\n`;
+        out += `${indent}    {% assign ${ruleVar} = false %}\n`;
+        out += `${indent}{% endif %}\n`;
+        return out;
+      }
+
+      const expr = buildConditionExpression(c);
+      let out = '';
+      out += `${indent}{% assign ${ruleVar} = false %}\n`;
+      out += `${indent}{% if ${expr} %}\n`;
+      out += `${indent}    {% assign ${ruleVar} = true %}\n`;
+      out += `${indent}{% endif %}\n`;
+      return out;
+    }
+
+    // ============================================================
+    // Advanced Filter Logic — AST parser & compiler
+    // Liquid doesn't support parentheses, so we parse the user's expression
+    // into a tree and emit a chain of logic_N intermediate variables that
+    // collapses the tree back into flat AND/OR statements.
+    // Mirrors the approach in the v1.0.0 release of the original builder.
+    // ============================================================
+    function tokenizeLogic(expression) {
+      return (String(expression || '').toLowerCase().match(/\d+|\(|\)|and|or/g) || []);
+    }
+
+    function parseLogicAst(expression, conditionCount) {
+      const tokens = tokenizeLogic(expression);
+      let position = 0;
+
+      function parsePrimary() {
+        const token = tokens[position++];
+        if (!token) return null;
+        if (/^\d+$/.test(token)) {
+          const index = Number(token);
+          if (index < 1 || index > conditionCount) return null;
+          return { type: 'rule', index };
+        }
+        if (token === '(') {
+          const node = parseOr();
+          if (tokens[position] !== ')') return null;
+          position++;
+          return node;
+        }
+        return null;
+      }
+
+      function parseAnd() {
+        let node = parsePrimary();
+        while (tokens[position] === 'and') {
+          position++;
+          const right = parsePrimary();
+          if (!node || !right) return null;
+          node = { type: 'and', left: node, right };
+        }
+        return node;
+      }
+
+      function parseOr() {
+        let node = parseAnd();
+        while (tokens[position] === 'or') {
+          position++;
+          const right = parseAnd();
+          if (!node || !right) return null;
+          node = { type: 'or', left: node, right };
+        }
+        return node;
+      }
+
+      const ast = parseOr();
+      return ast && position === tokens.length ? ast : null;
+    }
+
+    function defaultLogicAst(conditionCount) {
+      const rules = Array.from({ length: conditionCount }, (_, i) => ({ type: 'rule', index: i + 1 }));
+      return rules.reduce((left, right) => left ? { type: 'and', left, right } : right, null);
+    }
+
+    function emitLogicAst(node, ctx, indent = '    ') {
+      if (!node) return { varName: 'condition_matches', block: '' };
+      if (node.type === 'rule') {
+        return { varName: `rule_${node.index}`, block: '' };
+      }
+      const left  = emitLogicAst(node.left,  ctx, indent);
+      const right = emitLogicAst(node.right, ctx, indent);
+      const varName = `logic_${ctx.next++}`;
+      const op = node.type === 'and' ? 'and' : 'or';
+      let block = left.block + right.block;
+      block += `${indent}{% assign ${varName} = false %}\n`;
+      block += `${indent}{% if ${left.varName} == true ${op} ${right.varName} == true %}\n`;
+      block += `${indent}    {% assign ${varName} = true %}\n`;
+      block += `${indent}{% endif %}\n`;
+      return { varName, block };
+    }
+
+    function getEffectiveLogicExpression() {
+      const N = state.conditions.filter(c => c.field).length;
+      if (N < 2) return null; // no advanced logic for fewer than 2 conditions
+      const expr = (state.advancedLogic || '').trim();
+      if (!expr) return null; // empty → use default
+      return expr;
+    }
+
+    function buildConditionEvaluation(N, indent = '    ') {
+      // Use AST-based emission (handles parens via intermediate logic_N vars).
+      // If expression is invalid or empty, fall back to the default left-folded AND.
+      const expr = getEffectiveLogicExpression();
+      const ast = (expr ? parseLogicAst(expr, N) : null) || defaultLogicAst(N);
+      const compiled = emitLogicAst(ast, { next: 1 }, indent);
+
+      let out = compiled.block;
+      out += `${indent}{% assign condition_matches = false %}\n`;
+      out += `${indent}{% if ${compiled.varName} == true %}\n`;
+      out += `${indent}    {% assign condition_matches = true %}\n`;
+      out += `${indent}{% endif %}\n`;
+      return out;
+    }
+
+    function appendConditionEvaluation(lines, validConds, N, indent = '    ') {
+      const coercions = buildCoercions(indent);
+      if (coercions) lines.push(coercions.replace(/^\n+/, '').trimEnd());
+
+      if (N > 0) {
+        lines.push(`${indent}{% comment %} Evaluate builder rules without parentheses {% endcomment %}`);
+        validConds.forEach((c, i) => {
+          lines.push(buildRuleEvaluation(c, `rule_${i + 1}`, indent).trimEnd());
+        });
+        lines.push(buildConditionEvaluation(N, indent).trimEnd());
+      } else {
+        lines.push(`${indent}{% assign condition_matches = true %}`);
+      }
+    }
+
+    function generateNestedAttributeLiquid(validConds, N) {
+      const { nestedAttr, matchKey, catalogName } = state;
+      const lines = [];
+      lines.push(`{% comment %} Generated by Braze Catalog Liquid Builder (Nested Attribute Mode) {% endcomment %}`);
+      lines.push(`{% assign user_locations = custom_attribute.\${${nestedAttr}} %}`);
+      lines.push(`{% if user_locations == blank %}`);
+      lines.push(`    {% abort_message("${nestedAttr} is blank") %}`);
+      lines.push(`{% endif %}`);
+      lines.push(`{% assign has_match = false %}`);
+      lines.push(`{% assign matching_locations = "" %}`);
+
+      const presets = getPresetConditions();
+      const cutoffs = buildDateCutoffSetup(presets);
+      if (cutoffs) lines.push(cutoffs.trimEnd());
+
+      lines.push(`{% comment %} First pass: Check if user has any matching catalog entries {% endcomment %}`);
+      lines.push(`{% for location in user_locations %}`);
+      lines.push(`    {% assign unique_indentifier  = location.${matchKey} %}`);
+      lines.push(`    {% if unique_indentifier  == blank %}`);
+      lines.push(`        {% continue %}`);
+      lines.push(`    {% endif %}`);
+      lines.push(`    {% catalog_items ${catalogName} {{unique_indentifier }} %}`);
+      lines.push(`    {% assign catalog_item = items[0] %}`);
+      lines.push(`    {% if catalog_item != blank %}`);
+
+      appendConditionEvaluation(lines, validConds, N, '    ');
+
+      lines.push(`        {% if condition_matches == true %}`);
+      lines.push(`            {% assign has_match = true %}`);
+      lines.push(`            {% if matching_locations == "" %}`);
+      lines.push(`                {% assign matching_locations = unique_indentifier  %}`);
+      lines.push(`            {% else %}`);
+      lines.push(`                {% assign matching_locations = matching_locations | append: "," | append: unique_indentifier  %}`);
+      lines.push(`            {% endif %}`);
+      lines.push(`        {% endif %}`);
+      lines.push(`    {% endif %}`);
+      lines.push(`{% endfor %}`);
+      lines.push(`{% comment %} Abort if no matches found {% endcomment %}`);
+      lines.push(`{% if has_match == false %}`);
+      lines.push(`    {% abort_message("No matching catalog entries found for criteria") %}`);
+      lines.push(`{% endif %}`);
+      lines.push(`{% comment %} Second pass: Output success for matching entries {% endcomment %}`);
+      lines.push(`{% assign guid_array = matching_locations | split: "," %}`);
+      lines.push(`{% for guid in guid_array %}`);
+      lines.push(`    {% assign guid_clean = guid | strip %}`);
+      lines.push(`    {% if guid_clean != "" %}`);
+      lines.push(`        {% catalog_items ${catalogName} {{guid_clean}} %}`);
+      lines.push(`        {% assign catalog_item = items[0] %}`);
+      lines.push(`        success - Match: {{guid_clean}} matched criteria`);
+      lines.push(`    {% endif %}`);
+      lines.push(`{% endfor %}`);
+
+      return lines.join('\n');
+    }
+
+    function generateSingleAttributeLiquid(validConds, N) {
+      const catalogName = String(state.catalogName || '').trim() || 'Enter your Braze catalog name';
+      const sourceAttr = String(state.singleAttr || '').trim() || 'catalog_id';
+      const lines = [];
+
+      lines.push(`{% comment %} Generated by Braze Catalog Liquid Builder (Non-Nested Attribute Mode) {% endcomment %}`);
+      lines.push(`{% assign catalog_id = custom_attribute.\${${sourceAttr}} %}`);
+      lines.push(`{% if catalog_id == blank or catalog_id == null %}`);
+      lines.push(`    {% abort_message("${sourceAttr} is blank") %}`);
+      lines.push(`{% endif %}`);
+      lines.push(``);
+      lines.push(`{% catalog_items ${catalogName} {{catalog_id}} %}`);
+      lines.push(`{% assign catalog_item = items[0] %}`);
+      lines.push(``);
+      lines.push(`{% if catalog_item == blank %}`);
+      lines.push(`    {% abort_message("No matching catalog item found for ${sourceAttr}") %}`);
+      lines.push(`{% endif %}`);
+
+      const presets = getPresetConditions();
+      const cutoffs = buildDateCutoffSetup(presets);
+      if (cutoffs) {
+        lines.push(``);
+        lines.push(cutoffs.trimEnd());
+      }
+
+      lines.push(``);
+      appendConditionEvaluation(lines, validConds, N, '');
+      lines.push(``);
+      lines.push(`{% if condition_matches == false %}`);
+      lines.push(`    {% abort_message("No matching catalog criteria found") %}`);
+      lines.push(`{% endif %}`);
+      lines.push(``);
+      lines.push(`success - Catalog ID: {{catalog_id}} matched criteria`);
+
+      return lines.join('\n').replace(/\n{3,}/g, '\n\n');
+    }
+
+    function generateLiquid() {
+      const validConds = state.conditions.filter(c => c.field);
+      const N = validConds.length;
+
+      if (state.sourceMode === 'single') {
+        return generateSingleAttributeLiquid(validConds, N);
+      }
+
+      return generateNestedAttributeLiquid(validConds, N);
+    }
+
+    function updateGeneratedCode() {
+      $('#generatedCode').textContent = generateLiquid();
+    }
+
+    function updatePreview() {
+      const validConds = state.conditions.filter(c => c.field);
+      const isSingle = state.sourceMode === 'single';
+      const sourceLabel = isSingle
+        ? `custom_attribute.\${${state.singleAttr || 'catalog_id'}}`
+        : `${state.nestedAttr} entries`;
+
+      if (validConds.length === 0) {
+        $('#queryPreview').textContent = isSingle
+          ? `Find users whose ${state.singleAttr || 'catalog_id'} custom attribute matches a ${state.catalogName} catalog ID.`
+          : `Find users whose ${state.nestedAttr} entries exist in ${state.catalogName}.`;
+        return;
+      }
+
+      const labelFor = (c) => {
+        const op = (OPERATORS[c.type] || {})[c.operator] || {};
+        const opLabel = (op.label || c.operator).toLowerCase();
+        if (op.noValue) return `${c.field} ${opLabel}`;
+        return `${c.field} ${opLabel} "${c.value || '...'}"`;
+      };
+
+      const expr = getEffectiveLogicExpression();
+      if (expr && validConds.length >= 2) {
+        const ast = parseLogicAst(expr, validConds.length);
+        const exprDisplay = ast ? expr : `${expr} (invalid → default)`;
+        const map = validConds.map((c, i) => `${i + 1} = ${labelFor(c)}`).join('  •  ');
+        $('#queryPreview').textContent = isSingle
+          ? `Find users where the catalog item loaded from ${sourceLabel} matches: ${exprDisplay} — ${map}`
+          : `Find users with at least one ${sourceLabel} where: ${exprDisplay} — ${map}`;
+        return;
+      }
+
+      const parts = validConds.map(labelFor);
+      $('#queryPreview').textContent = isSingle
+        ? `Find users where the catalog item loaded from ${sourceLabel} matches: ${parts.join(' AND ')}`
+        : `Find users with at least one ${sourceLabel} where: ${parts.join(' AND ')}`;
+    }
+
+    // ============================================================
+    // Event wiring
+    // ============================================================
+    function wireConfigInputs() {
+      document.querySelectorAll('input[name="sourceMode"]').forEach(input => {
+        input.addEventListener('change', (e) => {
+          state.sourceMode = e.target.value;
+          render();
+        });
+      });
+
+      $('#nestedAttr').addEventListener('input', (e) => { state.nestedAttr = e.target.value.trim(); updatePreview(); updateGeneratedCode(); });
+      $('#matchKey').addEventListener('input',  (e) => { state.matchKey  = e.target.value.trim(); updatePreview(); updateGeneratedCode(); });
+      $('#singleAttr').addEventListener('input', (e) => { state.singleAttr = e.target.value.trim(); updatePreview(); updateGeneratedCode(); });
+      $('#catalogName').addEventListener('input', (e) => { state.catalogName = e.target.value.trim(); updatePreview(); updateGeneratedCode(); });
+    }
+
+    function wireGlobalActions() {
+      $('#addConditionBtn').addEventListener('click', addCondition);
+      $('#copyBtn').addEventListener('click', () => {
+        const text = $('#generatedCode').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          const t = $('#toast');
+          t.classList.add('show');
+          setTimeout(() => t.classList.remove('show'), 1600);
+        });
+      });
+
+      // Advanced Filter Logic — user input
+      const advInput = document.getElementById('advancedLogicInput');
+      if (advInput) {
+        advInput.addEventListener('input', (e) => {
+          state.advancedLogic = e.target.value;
+          state.userTouchedLogic = true;
+          renderAdvancedLogic();
+          updatePreview();
+          updateGeneratedCode();
+        });
+      }
+    }
+
+    // ============================================================
+    // Init
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      wireConfigInputs();
+      wireGlobalActions();
+      render();
+    });
+  </script>
+</body>
+</html>
