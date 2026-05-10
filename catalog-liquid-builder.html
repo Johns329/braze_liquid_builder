@@ -7,1011 +7,790 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --adobe-blue: #1473e6;
-      --adobe-blue-hover: #0d66d0;
-      --adobe-red: #fa0f00;
-      --adobe-orange: #ff7a00;
-      --adobe-magenta: #f54c7f;
-      --adobe-purple: #8d6bff;
-      --ink: #2c2c2c;
-      --ink-strong: #1d1d1d;
-      --ink-muted: #6e6e6e;
-      --ink-soft: #909090;
-      --border: #dedede;
-      --border-strong: #cacaca;
-      --surface: #ffffff;
-      --surface-soft: #f8f8f8;
-      --background: #f5f5f5;
-      --nav: #000000;
-      --danger: #d31510;
-      --success: #12805c;
-      --info: var(--adobe-blue);
-      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
-      --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.12);
-      --shadow-lg: 0 18px 45px rgba(0, 0, 0, 0.18);
-      --radius-lg: 16px;
-      --radius-md: 10px;
+      /* Clean, Minimalist Palette */
+      --bg: #ffffff;
+      --bg-muted: #f4f4f5; /* Body background */
+      --bg-subtle: #fafafa;
+      --border: #e4e4e7;
+      --border-focus: #a1a1aa;
+      --text: #09090b;
+      --text-muted: #71717a;
+      --primary: #18181b;
+      --primary-hover: #27272a;
+      --primary-text: #ffffff;
+      --danger: #ef4444;
+      --danger-bg: #fef2f2;
+      --radius-lg: 12px;
+      --radius-md: 8px;
       --radius-sm: 6px;
-      --radius-pill: 999px;
-      --max-w: 1180px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --max-w: 1024px;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--background);
-      color: var(--ink);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-muted);
+      color: var(--text);
       line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
       min-height: 100vh;
     }
 
     a { color: inherit; text-decoration: none; }
 
     .container {
-      width: min(calc(100% - 48px), var(--max-w));
+      width: 100%;
+      max-width: var(--max-w);
       margin: 0 auto;
+      padding: 0 24px;
     }
 
-    /* Adobe-inspired shell navigation */
-    .shellbar {
-      min-height: 68px;
-      background: var(--nav);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      padding: 0 24px;
-      gap: 28px;
-      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset;
+    /* Minimal Navbar */
+    .navbar {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 40;
     }
 
-    .brand {
-      display: inline-flex;
+    .navbar-inner {
+      height: 64px;
+      display: flex;
       align-items: center;
-      gap: 14px;
-      min-width: 214px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      font-size: 19px;
-      white-space: nowrap;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text);
     }
 
     .brand-mark {
-      width: 44px;
-      height: 44px;
-      background: #fff;
-      color: #000;
-      display: grid;
-      place-items: center;
-      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-      font-size: 26px;
-      font-weight: 900;
-      line-height: 1;
-      letter-spacing: -0.16em;
-      padding-right: 3px;
-    }
-
-    .shell-links {
-      display: flex;
-      align-items: center;
-      gap: 26px;
-      font-size: 15px;
-      color: rgba(255, 255, 255, 0.78);
-      flex: 1;
-      min-width: 0;
-    }
-
-    .shell-links a {
-      white-space: nowrap;
-      transition: color 0.15s ease;
-    }
-
-    .shell-links a:hover,
-    .shell-links a.active { color: #fff; }
-
-    .shell-more {
-      font-size: 24px;
-      line-height: 1;
-      color: rgba(255, 255, 255, 0.72);
-      margin-left: 2px;
-    }
-
-    .shell-actions {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      font-size: 15px;
-      color: rgba(255, 255, 255, 0.92);
-      white-space: nowrap;
-    }
-
-    .shell-icon {
-      width: 32px;
-      height: 32px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      color: rgba(255, 255, 255, 0.88);
-      font-size: 17px;
-    }
-
-    .avatar {
-      width: 32px;
-      height: 32px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      color: #fff;
-      background: linear-gradient(135deg, #08c4df 0%, #0b95cf 100%);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-    }
-
-    .subnav {
-      background: var(--surface);
-      min-height: 62px;
-      border-bottom: 1px solid var(--border);
-      position: relative;
-      z-index: 20;
-    }
-
-    .subnav-inner {
-      width: min(calc(100% - 48px), var(--max-w));
-      margin: 0 auto;
-      min-height: 62px;
-      display: flex;
-      align-items: center;
-      gap: 34px;
-      color: var(--ink-strong);
-      font-size: 14px;
-    }
-
-    .subnav .mini-mark {
       width: 28px;
       height: 28px;
-      color: var(--adobe-red);
-      font-weight: 900;
-      font-size: 26px;
-      line-height: 1;
-      margin-right: 4px;
-    }
-
-    .subnav a {
-      min-height: 62px;
-      display: inline-flex;
-      align-items: center;
-      border-bottom: 3px solid transparent;
-      white-space: nowrap;
-    }
-
-    .subnav a.active {
-      border-bottom-color: var(--ink-strong);
-      font-weight: 700;
-    }
-
-    .subnav .chevron::after {
-      content: '⌄';
-      font-size: 14px;
-      margin-left: 7px;
-      color: var(--ink-muted);
-      transform: translateY(-1px);
-    }
-
-    /* Hero */
-    .hero {
-      position: relative;
-      isolation: isolate;
-      min-height: 250px;
-      overflow: visible;
-      background:
-        radial-gradient(780px 360px at 18% 10%, rgba(156, 137, 255, 0.95), transparent 68%),
-        radial-gradient(760px 360px at 58% 16%, rgba(255, 134, 51, 0.82), transparent 63%),
-        linear-gradient(108deg, #8d78f7 0%, #d361b3 31%, #ff6537 59%, #f30c00 100%);
-    }
-
-    .hero::before,
-    .hero::after {
-      content: '';
-      position: absolute;
-      inset: auto;
-      pointer-events: none;
-      z-index: -1;
-      border-radius: 50%;
-      filter: blur(0.5px);
-      opacity: 0.55;
-    }
-
-    .hero::before {
-      width: 640px;
-      height: 360px;
-      left: 18%;
-      top: -126px;
-      background: rgba(255, 255, 255, 0.15);
-      transform: rotate(101deg);
-    }
-
-    .hero::after {
-      width: 460px;
-      height: 300px;
-      right: 20%;
-      bottom: -190px;
-      background: rgba(0, 0, 0, 0.08);
-      transform: rotate(-31deg);
-    }
-
-    .hero-content {
-      min-height: 250px;
+      background: var(--primary);
+      color: var(--primary-text);
+      border-radius: var(--radius-sm);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      color: #fff;
-      padding: 40px 0 72px;
+      font-weight: 700;
+      font-size: 14px;
     }
 
-    .hero-kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 5px 13px;
-      border-radius: var(--radius-pill);
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.34);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 15px;
-      backdrop-filter: blur(8px);
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .nav-links a { transition: color 0.15s ease; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+
+    /* Clean Hero Section */
+    .hero {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 64px 0 56px;
+      text-align: center;
     }
 
     .hero h1 {
-      font-size: clamp(34px, 5vw, 48px);
-      line-height: 1.08;
-      letter-spacing: -0.045em;
-      font-weight: 800;
-      text-shadow: 0 10px 35px rgba(0, 0, 0, 0.18);
-      margin-bottom: 11px;
+      font-size: clamp(28px, 5vw, 36px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      color: var(--text);
     }
 
     .hero p {
-      max-width: 760px;
       font-size: 16px;
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.92);
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
     }
 
-    .hero-actions {
-      position: absolute;
-      left: 50%;
-      bottom: -34px;
-      transform: translateX(-50%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      width: min(calc(100% - 48px), 760px);
-      z-index: 5;
-    }
-
-    .hero-pill {
-      min-height: 56px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 0 28px;
-      border-radius: var(--radius-pill);
-      background: rgba(255, 255, 255, 0.94);
-      color: var(--ink-strong);
-      font-weight: 800;
-      font-size: 16px;
-      box-shadow: var(--shadow-md);
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-    }
-
-    .hero-pill:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.17);
-      background: #fff;
-    }
-
-    .hero-pill.primary {
-      background: var(--adobe-blue);
-      color: #fff;
-      border-color: transparent;
-      min-width: 222px;
-    }
-
-    .hero-pill.primary:hover { background: var(--adobe-blue-hover); }
-
+    /* Main App Content */
     .app-content {
-      padding-top: 74px;
-      padding-bottom: 84px;
+      padding-top: 48px;
+      padding-bottom: 64px;
+      flex: 1;
     }
 
-    .welcome-card {
-      background: var(--surface);
+    .card {
+      background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      min-height: 130px;
-      padding: 24px 28px;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      gap: 22px;
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 24px;
       box-shadow: var(--shadow-sm);
-      margin-bottom: 22px;
-    }
-
-    .welcome-illustration {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 70% 30%, rgba(255, 122, 0, 0.9) 0 16%, transparent 17%),
-        radial-gradient(circle at 40% 36%, rgba(202, 114, 175, 0.9) 0 15%, transparent 16%),
-        radial-gradient(circle at 61% 62%, rgba(20, 115, 230, 0.18) 0 34%, transparent 35%),
-        linear-gradient(135deg, rgba(20, 115, 230, 0.12), rgba(250, 15, 0, 0.11));
-      position: relative;
-      flex: 0 0 auto;
-    }
-
-    .welcome-illustration::before {
-      content: '⚙';
-      position: absolute;
-      left: 13px;
-      bottom: 11px;
-      color: #6a6ff5;
-      font-size: 28px;
-      line-height: 1;
-    }
-
-    .header-tag {
-      display: inline-flex;
-      width: fit-content;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--adobe-blue);
-      background: #eef5ff;
-      border: 1px solid #d7e8ff;
-      padding: 4px 10px;
-      border-radius: var(--radius-pill);
-      margin-bottom: 8px;
     }
 
     .welcome-card h2 {
-      font-size: 22px;
-      line-height: 1.2;
-      letter-spacing: -0.02em;
-      color: var(--ink-strong);
-      margin-bottom: 4px;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 6px;
     }
 
     .welcome-card p {
-      color: var(--ink-muted);
-      max-width: 790px;
       font-size: 14px;
-    }
-
-    .welcome-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 42px;
-      padding: 0 20px;
-      border-radius: var(--radius-pill);
-      border: 2px solid var(--ink-strong);
-      color: var(--ink-strong);
-      font-weight: 800;
-      white-space: nowrap;
-      background: #fff;
-      transition: background 0.15s ease, transform 0.15s ease;
-    }
-
-    .welcome-link:hover {
-      background: var(--surface-soft);
-      transform: translateY(-1px);
-    }
-
-    /* Cards */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 26px;
-      margin-bottom: 22px;
-      box-shadow: var(--shadow-sm);
+      color: var(--text-muted);
     }
 
     .card-title {
-      font-size: 22px;
-      font-weight: 800;
-      line-height: 1.2;
-      letter-spacing: -0.025em;
-      margin-bottom: 5px;
-      color: var(--ink-strong);
+      font-size: 18px;
+      font-weight: 600;
       display: flex;
       align-items: center;
       gap: 12px;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
     }
 
     .card-title .step {
-      width: 30px;
-      height: 30px;
-      background: var(--adobe-blue);
-      color: white;
+      width: 26px;
+      height: 26px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
       border-radius: 50%;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
-      font-weight: 800;
-      box-shadow: 0 4px 10px rgba(20, 115, 230, 0.28);
-      flex: 0 0 auto;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
     }
 
     .card-subtitle {
       font-size: 14px;
-      color: var(--ink-muted);
-      margin-bottom: 20px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
     }
 
-    /* Config grid */
+    /* Configuration Grid */
     .config-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
     }
 
     .source-mode-toggle {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
     }
 
     .source-mode-option {
-      flex: 1 1 300px;
       display: flex;
       gap: 12px;
       align-items: flex-start;
       padding: 16px;
       border: 1px solid var(--border);
-      border-radius: 13px;
-      background: var(--surface);
+      border-radius: var(--radius-md);
+      background: var(--bg);
       cursor: pointer;
-      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.15s;
+      transition: all 0.15s ease;
     }
 
-    .source-mode-option:hover {
-      border-color: var(--border-strong);
-      box-shadow: var(--shadow-sm);
-      transform: translateY(-1px);
-    }
+    .source-mode-option:hover { border-color: var(--border-focus); }
 
     .source-mode-option input {
-      margin-top: 3px;
-      accent-color: var(--adobe-blue);
+      margin-top: 4px;
+      accent-color: var(--primary);
+    }
+
+    .source-mode-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .source-mode-title {
-      display: block;
       font-size: 14px;
-      font-weight: 800;
-      color: var(--ink-strong);
+      font-weight: 600;
+      color: var(--text);
     }
 
     .source-mode-description {
-      display: block;
-      font-size: 12px;
-      color: var(--ink-muted);
-      margin-top: 4px;
-    }
-
-    .source-mode-description code,
-    .field-hint code,
-    .advanced-logic-section code {
-      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-      font-size: 0.92em;
-      background: #f3f3f3;
-      padding: 1px 5px;
-      border-radius: 4px;
-      border: 1px solid #e5e5e5;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
     }
 
     .source-mode-option.active {
-      border-color: rgba(20, 115, 230, 0.62);
-      background: #f4f9ff;
-      box-shadow: 0 0 0 3px rgba(20, 115, 230, 0.12);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px var(--primary);
+      background: var(--bg-subtle);
     }
 
     .config-field-hidden { display: none !important; }
 
+    /* Forms */
     .field-group {
       display: flex;
       flex-direction: column;
-      gap: 7px;
-      min-width: 0;
+      gap: 6px;
+      flex: 1;
+      min-width: 150px;
     }
 
     .field-label {
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--ink);
-      letter-spacing: 0.01em;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
     }
 
     .field-hint {
-      font-size: 11px;
-      color: var(--ink-soft);
-      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+      font-size: 13px;
+      color: var(--text-muted);
     }
 
-    .form-input,
-    .form-select {
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9em;
+      background: var(--bg-muted);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .form-input, .form-select {
+      height: 40px;
       width: 100%;
-      min-height: 42px;
-      padding: 10px 12px;
+      padding: 0 12px;
       font-size: 14px;
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-md);
-      background: #fff;
-      color: var(--ink-strong);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--text);
       font-family: inherit;
-      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      appearance: none;
     }
 
-    .form-input:hover,
-    .form-select:hover { border-color: #b8b8b8; }
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
 
-    .form-input:focus,
-    .form-select:focus {
+    .form-input:hover, .form-select:hover { border-color: var(--border-focus); }
+    .form-input:focus, .form-select:focus {
       outline: none;
-      border-color: var(--adobe-blue);
-      box-shadow: 0 0 0 3px rgba(20, 115, 230, 0.16);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px var(--primary);
+    }
+    
+    .form-input.input-invalid {
+      border-color: var(--danger) !important;
+      box-shadow: 0 0 0 1px var(--danger) !important;
     }
 
     .form-input.mono {
-      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
     }
 
-    /* Toolbar */
+    /* Toolbar & Buttons */
     .toolbar {
       display: flex;
-      align-items: flex-start;
       justify-content: space-between;
-      gap: 24px;
-      margin-bottom: 16px;
+      align-items: flex-start;
+      margin-bottom: 24px;
+      gap: 16px;
     }
 
-    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 7px;
-      min-height: 38px;
-      padding: 0 18px;
+      gap: 8px;
+      height: 38px;
+      padding: 0 16px;
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 500;
       border: 1px solid transparent;
-      border-radius: var(--radius-pill);
+      border-radius: var(--radius-sm);
       cursor: pointer;
       font-family: inherit;
-      transition: background 0.15s, border-color 0.15s, transform 0.05s, box-shadow 0.15s;
+      transition: all 0.15s ease;
       white-space: nowrap;
     }
 
-    .btn:active { transform: translateY(1px); }
-
-    .btn-primary {
-      background: var(--adobe-blue);
-      color: white;
-      box-shadow: 0 4px 12px rgba(20, 115, 230, 0.22);
-    }
-
-    .btn-primary:hover { background: var(--adobe-blue-hover); }
+    .btn-primary { background: var(--primary); color: var(--primary-text); box-shadow: var(--shadow-sm); }
+    .btn-primary:hover { background: var(--primary-hover); }
 
     .btn-secondary {
-      background: white;
-      color: var(--ink-strong);
-      border-color: var(--border-strong);
+      background: var(--bg);
+      color: var(--text);
+      border-color: var(--border);
+      box-shadow: var(--shadow-sm);
     }
-
-    .btn-secondary:hover {
-      background: var(--surface-soft);
-      border-color: #b8b8b8;
-    }
+    .btn-secondary:hover { background: var(--bg-muted); }
 
     .btn-danger-ghost {
       background: transparent;
-      color: var(--ink-muted);
-      padding: 0 10px;
-      min-width: 38px;
-      font-size: 22px;
-      line-height: 1;
-      border-radius: 50%;
+      color: var(--text-muted);
+      border: none;
+      cursor: pointer;
+      height: 38px;
+      width: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s;
     }
-
     .btn-danger-ghost:hover {
+      background: var(--danger-bg);
       color: var(--danger);
-      background: rgba(211, 21, 16, 0.08);
     }
 
-    .btn-mini {
-      min-height: 32px;
-      padding: 0 14px;
-      font-size: 12px;
-    }
+    .btn-mini { height: 30px; padding: 0 12px; font-size: 12px; }
 
-    /* Conditions */
+    /* Conditions Layout (Grid for responsiveness) */
     .condition-row {
       display: grid;
-      grid-template-columns: auto minmax(190px, 1.4fr) minmax(116px, 0.9fr) minmax(160px, 1.2fr) minmax(210px, 1.6fr) auto;
-      gap: 12px;
-      align-items: end;
+      grid-template-columns: 1fr;
+      gap: 16px;
       padding: 16px;
-      background: var(--surface-soft);
-      border: 1px solid #e6e6e6;
-      border-radius: 13px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
       margin-bottom: 12px;
+    }
+    
+    @media (min-width: 768px) {
+      .condition-row {
+        grid-template-columns: 24px 1.5fr 1fr 1.5fr 2fr 32px;
+        align-items: flex-end;
+        padding: 20px;
+      }
+      .condition-number { margin-bottom: 8px; }
     }
 
     .condition-number {
-      width: 34px;
-      height: 34px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
-      background: var(--ink-strong);
-      color: white;
-      display: inline-flex;
+      background: var(--bg-muted);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
-      font-weight: 800;
-      align-self: center;
-      margin-bottom: 1px;
-    }
-
-    .value-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .value-row .form-input { flex: 1; min-width: 0; }
-
-    .value-suffix {
       font-size: 12px;
-      color: var(--ink-muted);
-      white-space: nowrap;
-      font-weight: 700;
+      font-weight: 600;
     }
+
+    .value-row { display: flex; gap: 8px; align-items: center; }
+    .value-row .form-input { flex: 1; min-width: 0; }
+    .value-suffix { font-size: 13px; color: var(--text-muted); white-space: nowrap; }
 
     .no-value-pill {
-      min-height: 42px;
+      height: 38px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 10px 12px;
-      font-size: 12px;
-      color: var(--ink-muted);
-      background: #fff;
-      border: 1px dashed var(--border-strong);
-      border-radius: var(--radius-md);
-      text-align: center;
+      padding: 0 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      background: var(--bg);
+      border: 1px dashed var(--border-focus);
+      border-radius: var(--radius-sm);
       font-style: italic;
     }
 
-    /* Output */
-    .code-window {
-      background: #151515;
-      border-radius: 13px;
-      overflow: hidden;
-      border: 1px solid #2a2a2a;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
-
-    .code-header {
-      background: #050505;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
-    }
-
-    .code-header-label {
-      color: rgba(255, 255, 255, 0.68);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-    }
-
-    .code-pre {
-      padding: 20px;
-      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-      font-size: 12.5px;
-      line-height: 1.58;
-      color: #eeeeee;
-      white-space: pre-wrap;
-      word-break: break-word;
-      overflow-x: auto;
-      max-height: 540px;
-      overflow-y: auto;
-      background:
-        linear-gradient(90deg, rgba(20, 115, 230, 0.08), transparent 18%),
-        #151515;
-    }
-
-    .preview-box {
-      padding: 16px 18px;
-      background: #f4f9ff;
-      border: 1px solid #d9eaff;
-      border-left: 4px solid var(--adobe-blue);
-      border-radius: 12px;
+    .empty-state {
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      border: 1px dashed var(--border-focus);
+      border-radius: var(--radius-md);
       font-size: 14px;
-      color: var(--ink);
-      margin-bottom: 18px;
+    }
+
+    /* Advanced Logic */
+    .advanced-logic-section {
+      margin-top: 24px;
+      padding: 20px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .advanced-logic-error {
+      font-size: 13px;
+      color: var(--danger);
+      margin-top: 4px;
+    }
+
+    /* Output Section */
+    .preview-box {
+      padding: 16px 20px;
+      background: var(--bg-subtle);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
     }
 
     .preview-box-label {
       font-size: 11px;
-      font-weight: 800;
-      color: var(--adobe-blue);
-      letter-spacing: 0.08em;
+      font-weight: 600;
+      color: var(--text-muted);
       text-transform: uppercase;
-      margin-bottom: 5px;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
     }
+
+    .code-window {
+      background: #09090b;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid #27272a;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: #18181b;
+      border-bottom: 1px solid #27272a;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .code-header-label {
+      color: #a1a1aa;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .code-pre {
+      padding: 20px;
+      margin: 0;
+      color: #e4e4e7;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    /* Clean Footer */
+    .footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      margin-top: auto;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .footer-inner { flex-direction: row; justify-content: space-between; }
+    }
+
+    .footer-text { font-size: 14px; color: var(--text-muted); }
+    
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 14px; color: var(--text-muted); transition: color 0.15s; }
+    .footer-links a:hover { color: var(--text); }
 
     /* Toast */
     .toast {
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background: var(--success);
-      color: white;
-      padding: 13px 18px;
-      border-radius: var(--radius-pill);
+      background: var(--primary);
+      color: var(--primary-text);
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
       font-size: 14px;
-      font-weight: 800;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+      font-weight: 500;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
       transform: translateY(150%);
-      transition: transform 0.3s ease;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 100;
     }
-
     .toast.show { transform: translateY(0); }
 
-    .empty-state {
-      padding: 34px;
-      text-align: center;
-      color: var(--ink-soft);
-      font-size: 14px;
-      border: 1px dashed var(--border-strong);
-      border-radius: 13px;
-      background: var(--surface-soft);
+    /* Floating Promo Modal */
+    .promo-modal {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 320px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+      padding: 24px;
+      z-index: 200;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
     }
-
-    .advanced-logic-section {
-      margin-top: 18px;
-      padding: 16px 18px;
-      background: var(--surface-soft);
-      border: 1px solid #e6e6e6;
-      border-radius: 13px;
+    .promo-modal.hidden {
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .promo-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
       display: flex;
-      flex-direction: column;
-      gap: 8px;
+      align-items: center;
+      justify-content: center;
     }
+    .promo-modal-close:hover { color: var(--text); }
 
-    .advanced-logic-section .field-label { margin-bottom: 0; }
+    .promo-modal-heading { font-size: 16px; font-weight: 600; margin-bottom: 8px; padding-right: 24px; }
+    .promo-modal-body { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
+    .promo-modal-actions { display: flex; gap: 8px; }
 
-    .advanced-logic-error {
-      font-size: 12px;
-      color: var(--danger);
-      padding: 8px 10px;
-      background: rgba(211, 21, 16, 0.08);
+    .promo-trigger {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      height: 40px;
+      padding: 0 16px;
       border-radius: var(--radius-sm);
-      border: 1px solid rgba(211, 21, 16, 0.25);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      z-index: 200;
+      transition: background 0.15s;
     }
+    .promo-trigger:hover { background: var(--bg-subtle); }
+    .promo-trigger.visible { display: inline-flex; }
 
-    #advancedLogicInput.input-invalid {
-      border-color: var(--danger);
-      box-shadow: 0 0 0 3px rgba(211, 21, 16, 0.13);
-    }
-
-    @media (max-width: 1080px) {
-      .shell-links a:nth-of-type(n+5) { display: none; }
-      .welcome-card { grid-template-columns: auto 1fr; }
-      .welcome-link { grid-column: 2; justify-self: start; }
+    /* Responsive Queries for Mobile Stacking */
+    @media (max-width: 767px) {
       .condition-row {
-        grid-template-columns: auto 1fr 1fr;
+        position: relative;
+        padding-top: 48px;
+      }
+      .condition-number {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+      }
+      .condition-row .btn-danger-ghost {
+        position: absolute;
+        top: 12px;
+        right: 12px;
       }
     }
 
-    @media (max-width: 820px) {
-      .container,
-      .subnav-inner { width: min(calc(100% - 32px), var(--max-w)); }
-      .shellbar { padding: 0 16px; gap: 16px; }
-      .brand { min-width: 0; font-size: 16px; }
-      .brand-mark { width: 38px; height: 38px; font-size: 23px; }
+    @media (max-width: 640px) {
       .shell-links { display: none; }
-      .shell-actions .user-name { display: none; }
-      .subnav-inner { overflow-x: auto; gap: 24px; }
-      .hero { min-height: 285px; }
-      .hero-content { min-height: 285px; padding-bottom: 106px; }
-      .hero-actions { bottom: -58px; gap: 12px; }
-      .hero-pill { min-height: 50px; width: min(100%, 320px); }
-      .app-content { padding-top: 92px; }
-      .config-grid { grid-template-columns: 1fr; }
-      .toolbar { flex-direction: column; align-items: stretch; }
-      .toolbar .btn { align-self: flex-start; }
-      .condition-row { grid-template-columns: auto 1fr; }
-    }
-
-    @media (max-width: 620px) {
-      .shellbar { min-height: 60px; }
-      .brand span:last-child { display: none; }
-      .shell-actions { gap: 8px; }
-      .subnav .mini-mark { display: none; }
-      .subnav-inner { gap: 22px; }
-      .hero h1 { font-size: 32px; }
-      .hero p { font-size: 14px; }
-      .welcome-card,
+      .hero { padding: 48px 0 32px; }
+      .hero h1 { font-size: 28px; }
       .card { padding: 20px; }
-      .welcome-card { grid-template-columns: 1fr; }
-      .welcome-link { grid-column: 1; }
-      .welcome-illustration { display: none; }
-      .card-title { font-size: 20px; align-items: flex-start; }
-      .condition-row { grid-template-columns: 1fr; }
-      .condition-number { margin-bottom: 0; }
-      .code-header { flex-direction: column; align-items: flex-start; }
+      .toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
+      .source-mode-toggle { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; text-align: center; gap: 12px; }
+      .promo-modal { right: 16px; left: 16px; width: auto; }
     }
   </style>
 </head>
 <body>
-  <nav class="shellbar" aria-label="Admin Console navigation">
-    <a class="brand" href="#sourceConfig" aria-label="Braze Catalog Liquid Builder home">
-      <span>Braze Liquid Suite</span>
-    </a>
-    <div class="shell-links" aria-label="Primary navigation">
-      <a href="#sourceConfig" class="active">Catalog Builder</a>
 
-      <span class="shell-more" aria-hidden="true">•••</span>
+  <header class="navbar" aria-label="Main navigation">
+    <div class="container navbar-inner">
+      <a class="brand" href="#sourceConfig">
+        <div class="brand-mark">B</div>
+        <span>Braze Liquid Suite</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#sourceConfig" class="active">Catalog Builder</a>
+        <a href="#">Templates</a>
+        <a href="#">Docs</a>
+      </nav>
     </div>
-
-  </nav>
-
-
+  </header>
 
   <section class="hero" aria-labelledby="pageTitle">
-    <div class="container hero-content">
+    <div class="container">
       <h1 id="pageTitle">Braze Catalog Liquid Builder</h1>
-      <p>Generate Braze Liquid that matches nested or non-nested user attributes against a catalog, then filters by your conditions.</p>
+      <p>Generate highly precise Braze Liquid queries to map user attributes to your catalogs and filter your audiences dynamically.</p>
     </div>
-
   </section>
 
   <main class="container app-content">
-    <section class="welcome-card" aria-label="Builder overview">
-      <div class="welcome-illustration" aria-hidden="true"></div>
-      <div>
-        <h2>Build catalog-powered targeting rules</h2>
-        <p>Configure the user attribute source, layer catalog field conditions, and copy production-ready Liquid from a cleaner.</p>
-      </div>
-
+    <section class="card welcome-card">
+      <h2>Build catalog-powered targeting rules</h2>
+      <p>Configure your logic, establish lookup variables, and copy secure, production-ready Liquid code seamlessly into your workflows.</p>
     </section>
 
-    <!-- Step 1: Source configuration -->
     <section class="card" id="sourceConfig">
-      <h2 class="card-title"><span class="step">1</span> Source Configuration</h2>
-      <p class="card-subtitle">Choose whether the catalog ID comes from each object in a nested array or from one string custom attribute.</p>
+      <div class="card-header">
+        <div class="card-title"><span class="step">1</span> Source Configuration</div>
+        <p class="card-subtitle">Choose whether the catalog ID matches against a nested array loop or a standard custom attribute.</p>
+      </div>
 
       <div class="source-mode-toggle" role="radiogroup" aria-label="Catalog matching source">
         <label class="source-mode-option active" id="nestedModeOption" for="modeNested">
           <input type="radio" name="sourceMode" id="modeNested" value="nested" checked />
-          <span>
+          <div class="source-mode-text">
             <span class="source-mode-title">Nested attribute array</span>
-            <span class="source-mode-description">Loop over an <a href="https://www.braze.com/docs/user_guide/data/activation/attributes/array_of_objects/#supported-data-types">array of objects</a> and use each item’s unique indentifier to match with the <a href=”https://www.braze.com/docs/user_guide/data/activation/catalogs/use/#using-catalogs-in-a-message”>catalog ID</a>.</span>
-          </span>
+            <span class="source-mode-description">Loop over an <a href="https://www.braze.com/docs/user_guide/data/activation/attributes/array_of_objects/#supported-data-types" style="text-decoration: underline; color: var(--text);" target="_blank">array of objects</a> and use each item's unique identifier to match with the <a href="https://www.braze.com/docs/user_guide/data/activation/catalogs/use/#using-catalogs-in-a-message" style="text-decoration: underline; color: var(--text);" target="_blank">catalog ID</a>.</span>
+          </div>
         </label>
         <label class="source-mode-option" id="singleModeOption" for="modeSingle">
           <input type="radio" name="sourceMode" id="modeSingle" value="single" />
-          <span>
+          <div class="source-mode-text">
             <span class="source-mode-title">Non-nested string attribute</span>
-            <span class="source-mode-description">Use a string custom attribute to against the Braze catalog ID.</span>
-          </span>
+            <span class="source-mode-description">Use a single string custom attribute to match against the catalog ID.</span>
+          </div>
         </label>
       </div>
 
       <div class="config-grid">
         <div class="field-group source-nested-only" id="nestedAttrGroup">
           <label class="field-label" for="nestedAttr">Nested Attribute Name</label>
-          <input type="text" class="form-input mono" id="nestedAttr" value="attribute_name " spellcheck="false" />
+          <input type="text" class="form-input mono" id="nestedAttr" value="attribute_name" spellcheck="false" />
           <span class="field-hint">User custom attribute (array)</span>
         </div>
         <div class="field-group source-nested-only" id="matchKeyGroup">
           <label class="field-label" for="matchKey">Nested Match Key</label>
-          <input type="text" class="form-input mono" id="matchKey" value="unique_indentifier " spellcheck="false" />
-          <span class="field-hint">Key inside each array item to join on catalog ID</span>
+          <input type="text" class="form-input mono" id="matchKey" value="unique_identifier" spellcheck="false" />
+          <span class="field-hint">Key inside array items to join on catalog ID</span>
         </div>
         <div class="field-group source-single-only config-field-hidden" id="singleAttrGroup">
           <label class="field-label" for="singleAttr">Non-Nested Attribute Name</label>
           <input type="text" class="form-input mono" id="singleAttr" value="state" spellcheck="false" />
-          <span class="field-hint">String custom attribute whose value is the catalog ID</span>
+          <span class="field-hint">String custom attribute acting as the catalog ID</span>
         </div>
         <div class="field-group">
           <label class="field-label" for="catalogName">Catalog Name</label>
-          <input type="text" class="form-input mono" id="catalogName" value="Enter your Braze catalog name" spellcheck="false" />
-          <span class="field-hint">Braze catalog to look up</span>
+          <input type="text" class="form-input mono" id="catalogName" value="my_catalog" spellcheck="false" />
+          <span class="field-hint">Exact Braze catalog to look up</span>
         </div>
       </div>
     </section>
 
-    <!-- Step 2: Query conditions -->
     <section class="card" id="queryConditions">
       <div class="toolbar">
         <div>
-          <h2 class="card-title"><span class="step">2</span> Query Conditions</h2>
-          <p class="card-subtitle">By default multiple filters evaluate as <strong>AND</strong>. Once you have 2+ filters, use Advanced Filter Logic for <strong>AND</strong>, <strong>OR</strong>, and parentheses.</p>
+          <div class="card-title"><span class="step">2</span> Query Conditions</div>
+          <p class="card-subtitle" style="margin-bottom:0;">By default multiple filters evaluate as <strong>AND</strong>. Unlock Advanced Filter Logic when grouping 2+ rules.</p>
         </div>
-        <button class="btn btn-primary" id="addConditionBtn">+ Add Condition</button>
+        <button class="btn btn-secondary" id="addConditionBtn">+ Add Condition</button>
       </div>
 
       <div id="conditionsContainer"></div>
 
       <div id="advancedLogicSection" class="advanced-logic-section" style="display:none;">
-        <label class="field-label" for="advancedLogicInput">Advanced Filter Logic</label>
-        <input type="text" class="form-input mono" id="advancedLogicInput" placeholder="1 or 2" spellcheck="false" />
-        <span class="field-hint">Use filter numbers, <code>and</code>, <code>or</code>, and parentheses. Example with two filters: <code>1 or 2</code>.</span>
-        <div id="advancedLogicError" class="advanced-logic-error" style="display:none;"></div>
+        <div class="field-group">
+          <label class="field-label" for="advancedLogicInput">Advanced Filter Logic</label>
+          <input type="text" class="form-input mono" id="advancedLogicInput" placeholder="1 and 2" spellcheck="false" />
+          <span class="field-hint">Use filter numbers, <code>and</code>, <code>or</code>, and parentheses. Example: <code>1 or (2 and 3)</code></span>
+          <div id="advancedLogicError" class="advanced-logic-error" style="display:none;"></div>
+        </div>
       </div>
     </section>
 
-    <!-- Step 3: Output -->
-    <section class="card" id="generatedOutput">
-      <h2 class="card-title"><span class="step">3</span> Generated Liquid</h2>
-      <p class="card-subtitle">Paste this into a Braze Webhook campaign request body.</p>
+    <section class="card" id="generatedOutput" style="margin-bottom: 0;">
+      <div class="card-header">
+        <div class="card-title"><span class="step">3</span> Generated Liquid</div>
+        <p class="card-subtitle">Paste this directly into your Braze Webhook or campaign request body.</p>
+      </div>
 
       <div class="preview-box">
-        <div class="preview-box-label">Plain English</div>
-        <div id="queryPreview">Find users with at least one matching catalog entry.</div>
+        <div class="preview-box-label">Plain English Translation</div>
+        <div id="queryPreview">Find users with at least one matching catalog entry based on the rules applied.</div>
       </div>
 
       <div class="code-window">
         <div class="code-header">
-          <span class="code-header-label">Audience Logic — Liquid</span>
-          <button class="btn btn-secondary btn-mini" id="copyBtn">Copy Liquid</button>
+          <span class="code-header-label">output.liquid</span>
+          <button class="btn btn-secondary btn-mini" id="copyBtn">Copy Snippet</button>
         </div>
-        <pre class="code-pre" id="generatedCode">Generating…</pre>
+        <pre class="code-pre" id="generatedCode">Generating...</pre>
       </div>
     </section>
   </main>
 
-  <div class="toast" id="toast">✓ Copied to clipboard</div>
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p class="footer-text">&copy; 2026 Braze Liquid Suite. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="#">Documentation</a>
+        <a href="#">API Reference</a>
+        <a href="#">Privacy Policy</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast">Copied to clipboard</div>
+  
+  <div class="promo-modal" id="promoModal" role="dialog" aria-labelledby="promoHeading" aria-describedby="promoBody">
+    <button class="promo-modal-close" id="promoClose" aria-label="Dismiss">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    <div class="promo-modal-heading" id="promoHeading">New to Catalog Liquid?</div>
+    <div class="promo-modal-body" id="promoBody">Configure a source attribute, layer your targeting conditions, and get a production-ready block of logic instantly — no manual templating required.</div>
+    <div class="promo-modal-actions">
+      <button class="btn btn-primary" id="promoCtaBtn" style="flex: 1;">Watch Quick Start</button>
+      <button class="btn btn-secondary" id="promoDismiss">Maybe later</button>
+    </div>
+  </div>
+
+  <button class="promo-trigger" id="promoTrigger" aria-label="Open quick start guide">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+    Quick Start
+  </button>
 
   <script>
     // ============================================================
-    // Operator catalog (mirrors builder-config.js operatorsByType)
+    // Operator Definitions
     // ============================================================
     const OPERATORS = {
       string: {
@@ -1063,16 +842,16 @@
     // State
     // ============================================================
     const state = {
-      sourceMode:  'nested', // 'nested' loops an array; 'single' uses one string custom attribute as the catalog ID
-      nestedAttr:  'attribute_name ',
-      matchKey:    'unique_indentifier ',
+      sourceMode:  'nested',
+      nestedAttr:  'attribute_name',
+      matchKey:    'unique_identifier',
       singleAttr:  'state',
-      catalogName: 'Enter your Braze catalog name',
+      catalogName: 'my_catalog',
       conditions: [
         { id: 1, field: 'account_segment', type: 'string', operator: 'equals', value: 'SMB' },
       ],
-      advancedLogic: '',       // user-typed expression, e.g. "1 and (2 or 3)"
-      userTouchedLogic: false, // becomes true once user edits the field
+      advancedLogic: '',
+      userTouchedLogic: false,
     };
     let nextId = 2;
 
@@ -1085,7 +864,7 @@
     const firstOpKey = (type) => Object.keys(OPERATORS[type])[0];
 
     // ============================================================
-    // Rendering
+    // Rendering Engine
     // ============================================================
     function render() {
       renderSourceConfiguration();
@@ -1126,34 +905,28 @@
       const validCount = validConds.length;
       const logicCount = validCount >= 2 ? validCount : filterCount;
 
-      // Show once the user has added at least 2 filter rows.
       if (filterCount < 2) {
         section.style.display = 'none';
         return;
       }
       section.style.display = '';
 
-      // Default expression if user hasn't touched it. Blank filter rows are
-      // ignored by generated Liquid until a catalog field is entered, but the
-      // input still appears immediately when the second filter row is added.
       const defaultExpr = Array.from({ length: logicCount }, (_, i) => i + 1).join(' and ');
       if (!state.userTouchedLogic) {
         state.advancedLogic = defaultExpr;
       }
 
-      // Sync input value (only if different, to preserve cursor position when possible)
       if (input.value !== state.advancedLogic) {
         input.value = state.advancedLogic;
       }
 
-      // Validate against the visible filter count used in the default expression.
       const expr = (state.advancedLogic || '').trim();
       if (expr) {
         const ast = parseLogicAst(expr, logicCount);
         if (!ast) {
           input.classList.add('input-invalid');
           errorEl.style.display = '';
-          errorEl.textContent = `Invalid expression. Falling back to "${defaultExpr}". Check parentheses and use only filter numbers 1–${logicCount} with "and" / "or".`;
+          errorEl.innerHTML = `Invalid expression. Check parentheses and use only filter numbers 1–${logicCount} with "and" / "or". Defaulting to <code>${defaultExpr}</code>.`;
         } else {
           input.classList.remove('input-invalid');
           errorEl.style.display = 'none';
@@ -1167,17 +940,13 @@
     function renderConditions() {
       const container = $('#conditionsContainer');
       if (state.conditions.length === 0) {
-        container.innerHTML = `<div class="empty-state">No conditions yet. Click "+ Add Condition" to start.</div>`;
+        container.innerHTML = `<div class="empty-state">No conditions assigned yet. Click "+ Add Condition" to start filtering.</div>`;
         return;
       }
 
-      const rows = [];
-      state.conditions.forEach((c, idx) => {
-        rows.push(buildConditionRow(c, idx));
-      });
+      const rows = state.conditions.map((c, idx) => buildConditionRow(c, idx));
       container.innerHTML = rows.join('');
 
-      // Wire up listeners
       state.conditions.forEach((c) => {
         const fieldInput  = document.getElementById(`field-${c.id}`);
         const typeSelect  = document.getElementById(`type-${c.id}`);
@@ -1189,7 +958,6 @@
         opSelect?.addEventListener('change',   (e) => updateConditionOperator(c.id, e.target.value));
         removeBtn?.addEventListener('click',   () => removeCondition(c.id));
 
-        // Value handling depends on operator shape
         const op = OPERATORS[c.type][c.operator] || {};
         if (op.rangeValue) {
           const minEl = document.getElementById(`min-${c.id}`);
@@ -1220,7 +988,7 @@
           <div class="condition-number" title="Filter ${idx + 1}">${idx + 1}</div>
           <div class="field-group">
             <label class="field-label">Catalog Field</label>
-            <input type="text" class="form-input mono" id="field-${c.id}" value="${escAttr(c.field)}" placeholder="e.g. account_segment" spellcheck="false" />
+            <input type="text" class="form-input mono" id="field-${c.id}" value="${escAttr(c.field)}" placeholder="e.g. status" spellcheck="false" />
           </div>
           <div class="field-group">
             <label class="field-label">Type</label>
@@ -1230,21 +998,20 @@
             <label class="field-label">Operator</label>
             <select class="form-select" id="op-${c.id}">${opOptions}</select>
           </div>
-          <div class="field-group">
+          <div class="field-group" style="flex: 2;">
             <label class="field-label">Value</label>
             ${buildValueInput(c, op)}
           </div>
-          <div class="field-group">
-            <label class="field-label">&nbsp;</label>
-            <button class="btn btn-danger-ghost" id="remove-${c.id}" title="Remove condition" aria-label="Remove condition">×</button>
-          </div>
+          <button class="btn-danger-ghost" id="remove-${c.id}" title="Remove rule" aria-label="Remove condition">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
         </div>
       `;
     }
 
     function buildValueInput(c, op) {
       if (op.noValue) {
-        return `<div class="no-value-pill">No value needed</div>`;
+        return `<div class="no-value-pill">No input required</div>`;
       }
       if (op.rangeValue) {
         const [min = '', max = ''] = (c.value || '').split(',').map(v => v.trim());
@@ -1268,7 +1035,7 @@
       if (op.multiValue) {
         return `<input type="text" class="form-input" id="val-${c.id}" value="${escAttr(c.value)}" placeholder="value1, value2, value3" />`;
       }
-      // single value, type-aware
+      
       const inputType = c.type === 'datetime' ? 'date' : (c.type === 'number' ? 'number' : 'text');
       return `<input type="${inputType}" class="form-input" id="val-${c.id}" value="${escAttr(c.value)}" placeholder="Enter value" />`;
     }
@@ -1286,17 +1053,16 @@
       });
       render();
     }
+    
     function removeCondition(id) {
       state.conditions = state.conditions.filter(c => c.id !== id);
       render();
     }
+    
     function updateCondition(id, key, value) {
       const c = state.conditions.find(x => x.id === id);
       if (!c) return;
       c[key] = value;
-      // Avoid full re-render on text typing for value/field — just refresh output.
-      // Field edits can change whether Advanced Filter Logic should appear, so
-      // refresh that section without rebuilding the condition inputs.
       if (key === 'value' || key === 'field') {
         if (key === 'field') renderAdvancedLogic();
         updatePreview();
@@ -1305,6 +1071,7 @@
         render();
       }
     }
+    
     function updateConditionType(id, newType) {
       const c = state.conditions.find(x => x.id === id);
       if (!c) return;
@@ -1313,6 +1080,7 @@
       c.value = '';
       render();
     }
+    
     function updateConditionOperator(id, newOp) {
       const c = state.conditions.find(x => x.id === id);
       if (!c) return;
@@ -1320,6 +1088,7 @@
       c.value = '';
       render();
     }
+    
     function updateRangeValue(id, side, value) {
       const c = state.conditions.find(x => x.id === id);
       if (!c) return;
@@ -1331,7 +1100,7 @@
     }
 
     // ============================================================
-    // Liquid generation — mirrors liquid-engine.js (catalog-only, AND-only)
+    // Liquid generation & Logic Compilation Engine
     // ============================================================
     function buildConditionExpression(c) {
       const op = (OPERATORS[c.type] || {})[c.operator];
@@ -1340,7 +1109,6 @@
       if (!c.field) return `${field} != blank`;
       if (!op) return `${field} == ${quoteLiquid(value)}`;
 
-      // No-value operators
       if (op.noValue) {
         if (c.type === 'boolean') {
           const boolField = `${c.field}_bool`;
@@ -1358,7 +1126,6 @@
         return `${field} != blank`;
       }
 
-      // Range
       if (op.rangeValue) {
         const [minVal = '', maxVal = ''] = value.split(',').map(v => v.trim());
         if (c.type === 'datetime') {
@@ -1375,7 +1142,6 @@
         return `${field} != blank`;
       }
 
-      // Datetime presets (days ago / in future)
       if (op.preset && c.type === 'datetime') {
         const days = parseInt(value, 10) || 0;
         if (days <= 0) return `${field} != blank`;
@@ -1390,7 +1156,6 @@
         return `${field} != blank`;
       }
 
-      // Multi-value
       if (op.multiValue) {
         const values = value.split(',').map(v => v.trim()).filter(Boolean);
         if (values.length === 0) return `${field} != blank`;
@@ -1408,25 +1173,20 @@
               ? values.map(v => `${field} contains ${quoteLiquid(v)}`).join(' or ')
               : `${field} contains ${quoteLiquid(values[0])}`;
           case 'doesnt_contain_any_of':
-            // For "doesnt contain any of": we'll flip the rule_N assignment in evaluation.
-            // Here we emit the OR-of-contains — the rule builder negates it.
             return values.map(v => `${field} contains ${quoteLiquid(v)}`).join(' or ');
         }
       }
 
-      // Datetime direct comparison (uses _short slice)
       if (c.type === 'datetime' && value) {
         const fieldShort = `${c.field}_short`;
         return `${field} != blank and ${fieldShort} ${op.liquid} ${quoteLiquid(value)}`;
       }
 
-      // Number direct comparison (uses _num)
       if (c.type === 'number') {
         const numField = `${c.field}_num`;
         return `${numField} ${op.liquid} ${value || 0}`;
       }
 
-      // String direct comparison
       return `${field} ${op.liquid} ${quoteLiquid(value)}`;
     }
 
@@ -1464,9 +1224,6 @@
       const dateShortFields = new Set();
       const dateTsFields    = new Set();
 
-      // Always coerce based on the declared type — Braze catalogs store every
-      // value as a string, so the coerced var is what every operator should
-      // compare against (except is_blank/is_not_blank which use the raw field).
       state.conditions.forEach(c => {
         if (!c.field || !usedFields.has(c.field)) return;
         if (c.type === 'number')   numberFields.add(c.field);
@@ -1515,7 +1272,6 @@
     }
 
     function buildRuleEvaluation(c, ruleVar, indent = '    ') {
-      // Special case: doesnt_contain_any_of — invert the assignment
       if (c.operator === 'doesnt_contain_any_of') {
         const value = String(c.value || '').trim();
         const values = value.split(',').map(v => v.trim()).filter(Boolean);
@@ -1545,13 +1301,6 @@
       return out;
     }
 
-    // ============================================================
-    // Advanced Filter Logic — AST parser & compiler
-    // Liquid doesn't support parentheses, so we parse the user's expression
-    // into a tree and emit a chain of logic_N intermediate variables that
-    // collapses the tree back into flat AND/OR statements.
-    // Mirrors the approach in the v1.0.0 release of the original builder.
-    // ============================================================
     function tokenizeLogic(expression) {
       return (String(expression || '').toLowerCase().match(/\d+|\(|\)|and|or/g) || []);
     }
@@ -1627,15 +1376,13 @@
 
     function getEffectiveLogicExpression() {
       const N = state.conditions.filter(c => c.field).length;
-      if (N < 2) return null; // no advanced logic for fewer than 2 conditions
+      if (N < 2) return null;
       const expr = (state.advancedLogic || '').trim();
-      if (!expr) return null; // empty → use default
+      if (!expr) return null;
       return expr;
     }
 
     function buildConditionEvaluation(N, indent = '    ') {
-      // Use AST-based emission (handles parens via intermediate logic_N vars).
-      // If expression is invalid or empty, fall back to the default left-folded AND.
       const expr = getEffectiveLogicExpression();
       const ast = (expr ? parseLogicAst(expr, N) : null) || defaultLogicAst(N);
       const compiled = emitLogicAst(ast, { next: 1 }, indent);
@@ -1680,11 +1427,11 @@
 
       lines.push(`{% comment %} First pass: Check if user has any matching catalog entries {% endcomment %}`);
       lines.push(`{% for location in user_locations %}`);
-      lines.push(`    {% assign unique_indentifier  = location.${matchKey} %}`);
-      lines.push(`    {% if unique_indentifier  == blank %}`);
+      lines.push(`    {% assign unique_identifier = location.${matchKey} %}`);
+      lines.push(`    {% if unique_identifier == blank %}`);
       lines.push(`        {% continue %}`);
       lines.push(`    {% endif %}`);
-      lines.push(`    {% catalog_items ${catalogName} {{unique_indentifier }} %}`);
+      lines.push(`    {% catalog_items ${catalogName} {{unique_identifier}} %}`);
       lines.push(`    {% assign catalog_item = items[0] %}`);
       lines.push(`    {% if catalog_item != blank %}`);
 
@@ -1693,9 +1440,9 @@
       lines.push(`        {% if condition_matches == true %}`);
       lines.push(`            {% assign has_match = true %}`);
       lines.push(`            {% if matching_locations == "" %}`);
-      lines.push(`                {% assign matching_locations = unique_indentifier  %}`);
+      lines.push(`                {% assign matching_locations = unique_identifier %}`);
       lines.push(`            {% else %}`);
-      lines.push(`                {% assign matching_locations = matching_locations | append: "," | append: unique_indentifier  %}`);
+      lines.push(`                {% assign matching_locations = matching_locations | append: "," | append: unique_identifier %}`);
       lines.push(`            {% endif %}`);
       lines.push(`        {% endif %}`);
       lines.push(`    {% endif %}`);
@@ -1832,11 +1579,10 @@
         navigator.clipboard.writeText(text).then(() => {
           const t = $('#toast');
           t.classList.add('show');
-          setTimeout(() => t.classList.remove('show'), 1600);
+          setTimeout(() => t.classList.remove('show'), 2000);
         });
       });
 
-      // Advanced Filter Logic — user input
       const advInput = document.getElementById('advancedLogicInput');
       if (advInput) {
         advInput.addEventListener('input', (e) => {
@@ -1850,12 +1596,46 @@
     }
 
     // ============================================================
+    // Overlay/Promo logic
+    // ============================================================
+    function initPromoModal() {
+      const modal   = document.getElementById('promoModal');
+      const trigger = document.getElementById('promoTrigger');
+      const closeBtn = document.getElementById('promoClose');
+      const dismissBtn = document.getElementById('promoDismiss');
+      const ctaBtn = document.getElementById('promoCtaBtn');
+
+      if (!modal) return;
+
+      function hideModal() {
+        modal.classList.add('hidden');
+        if(trigger) trigger.classList.add('visible');
+      }
+
+      function showModal() {
+        modal.classList.remove('hidden');
+        if(trigger) trigger.classList.remove('visible');
+      }
+
+      setTimeout(showModal, 1000);
+
+      closeBtn?.addEventListener('click', hideModal);
+      dismissBtn?.addEventListener('click', hideModal);
+      trigger?.addEventListener('click', showModal);
+
+      ctaBtn?.addEventListener('click', () => {
+        alert('Quick start coming soon!');
+      });
+    }
+
+    // ============================================================
     // Init
     // ============================================================
     document.addEventListener('DOMContentLoaded', () => {
       wireConfigInputs();
       wireGlobalActions();
       render();
+      initPromoModal();
     });
   </script>
 </body>
